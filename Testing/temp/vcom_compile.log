@@ -1,0 +1,79 @@
+QuestaSim-64 vcom 2021.2 Compiler 2021.04 Apr 14 2021
+Start time: 20:55:07 on Nov 05,2021
+vcom -2008 -work internal/ModelSimContainer/work src/*.vhd 
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling entity nor_C
+-- Compiling architecture structure of nor_C
+-- Compiling entity Ripple_Adder
+-- Compiling architecture structure of Ripple_Adder
+-- Compiling entity xorg2
+-- Compiling architecture dataflow of xorg2
+-- Loading package NUMERIC_STD
+-- Compiling entity extender
+-- Compiling architecture dataflow of extender
+-- Compiling entity and_C
+-- Compiling architecture structure of and_C
+-- Compiling entity dffg
+-- Compiling architecture mixed of dffg
+-- Compiling entity org2
+-- Compiling architecture dataflow of org2
+-- Loading package Data_Types
+-- Compiling entity decode_logic
+-- Compiling architecture structure of decode_logic
+-- Compiling entity dffg_N
+-- Compiling architecture structural of dffg_N
+-- Compiling entity invg_N
+-- Compiling architecture structural of invg_N
+-- Compiling entity barrel_shifter
+-- Compiling architecture structure of barrel_shifter
+-- Compiling entity mux2t1
+-- Compiling architecture structural of mux2t1
+-- Loading package std_logic_textio
+-- Loading package ENV
+-- Compiling entity tb
+-- Compiling architecture mixed of tb
+-- Compiling package Data_Types
+-- Compiling package body Data_Types
+-- Loading package Data_Types
+-- Loading package Data_Types
+-- Compiling entity NBitMux
+-- Compiling architecture dataflow of NBitMux
+-- Compiling entity mux4t1
+-- Compiling architecture structural of mux4t1
+-- Compiling entity ALU
+-- Compiling architecture structure of ALU
+-- Compiling entity Add_Sub
+-- Compiling architecture structure of Add_Sub
+-- Compiling entity mux2t1_N
+-- Compiling architecture structural of mux2t1_N
+-- Compiling entity decoder_N
+-- Compiling architecture dataflow of decoder_N
+-- Compiling entity fAdder
+-- Compiling architecture structure of fAdder
+-- Compiling entity quadByte
+-- Compiling architecture dataflow of quadByte
+-- Compiling entity tb_NBitMux
+-- Compiling architecture behavior of tb_NBitMux
+** Warning: src/tb_NBitMux.vhd(60): (vcom-1074) Non-locally static OTHERS choice is allowed only if it is the only choice of the only association.
+-- Compiling entity MIPS_Processor
+-- Compiling architecture structure of MIPS_Processor
+-- Compiling entity xor_C
+-- Compiling architecture structure of xor_C
+-- Compiling entity andg2
+-- Compiling architecture dataflow of andg2
+-- Compiling entity or_C
+-- Compiling architecture structure of or_C
+-- Compiling entity fetch_logic
+-- Compiling architecture structure of fetch_logic
+-- Compiling entity RegisterFile
+-- Compiling architecture dataflow of RegisterFile
+-- Compiling entity nor_N
+-- Compiling architecture structure of nor_N
+-- Compiling entity invg
+-- Compiling architecture dataflow of invg
+-- Compiling entity mem
+-- Compiling architecture rtl of mem
+End time: 20:55:07 on Nov 05,2021, Elapsed time: 0:00:00
+Errors: 0, Warnings: 1
