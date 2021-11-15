@@ -15,8 +15,10 @@ vals_length: .word 10
 # $s6 => &arr[j+1]
 main:
     # s0 => vals
+    # this is a pseudo instruction (2 instructions)
     la $s0, vals
     # s1 => vals_length
+    # this is a pseudo instruction (2 instructions)
     la $s1, vals_length
     lw $s1, 0($s1)
     
@@ -65,7 +67,7 @@ swap:
     lw $t0, 0($s5)
     lw $t1, 0($s6)
     
-    sgt $t2, $t0, $t1
+    slt $t2, $t1, $t0
     beq $t2, $zero, swap_exit
     #do swap
     sw $t0, 0($s6)
