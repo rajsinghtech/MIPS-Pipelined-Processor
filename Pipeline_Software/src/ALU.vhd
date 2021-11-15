@@ -76,7 +76,7 @@ architecture structure of ALU is
 
 	  component quadByte is
 		generic( N: integer := N );
-		port(i_A          : in std_logic_vector( N - 1 downto 0);
+		port(i_A          : in std_logic_vector( 7 downto 0);
 			 o_F          : out std_logic_vector( N - 1 downto 0));
   
 	  end component;

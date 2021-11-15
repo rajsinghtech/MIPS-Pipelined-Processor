@@ -74,7 +74,7 @@ end  MIPS_Processor;
   signal next_ins_EX             : std_logic_vector(N-1 downto 0);
   signal jal_return_EX           : std_logic_vector(N-1 downto 0);
   signal raw_ins_EX              : std_logic_vector(N-1 downto 0);
-  signal control_sigs_EX         : std_logic_vector(N-1 downto 0);
+  signal control_sigs_EX         : std_logic_vector(30 downto 0);
   signal alu_out_EX              : std_logic_vector(N-1 downto 0);
   signal wb_data_EX               : std_logic_vector(N-1 downto 0);
 
@@ -451,7 +451,7 @@ port map( i_S => control_sigs_EX(25),
                 o_O => branch_result_addr);
 
 
-  jump_calc_addr <= next_ins_EX(31 downto 28) & raw_ins_EX(26 downto 0) & "00";
+  jump_calc_addr <= next_ins_EX(31 downto 28) & raw_ins_EX(25 downto 0) & "00";
 
   jump_select: mux2t1_N
   generic map ( N => 32 ) 
