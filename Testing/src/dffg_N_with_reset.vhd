@@ -33,7 +33,7 @@ begin
 
   G_NBit_REG: for i in 0 to N-1 generate
     REG: dffg port map( i_CLK => i_CLK,
-	       		i_RST => i_RST,
+	       		i_RST => open,
 	       		i_WE => i_WE,
 	       		i_D => reg_input(i),
 	       		o_Q => o_Q(i));
