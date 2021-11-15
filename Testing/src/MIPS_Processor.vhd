@@ -305,7 +305,7 @@ raw_ins_D <= fetch_stage_reg(31 downto 0);
 
 
   DecodeLogic: decode_logic 
-  port MAP (i_instruction => raw_ins_EX,
+  port MAP (i_instruction => raw_ins_D,
           o_jump => control_sigs_D(0),
           o_branch => control_sigs_D(1),
           o_memToReg => control_sigs_D(2),

@@ -146,7 +146,6 @@ architecture structure of decode_logic is
 
 
    o_regWrite <= '1' when (op_and_func_code or "000000111111") = (DECODE_OP(addic) & "111111")
-                    else '0' when op_and_func_code = "000000000000"
                     else '1' when (op_and_func_code or "000000111111") = (DECODE_OP(addiuc) & "111111")
                     else '1' when (op_and_func_code or "000000111111") = (DECODE_OP(andic) & "111111")
                     else '1' when (op_and_func_code or "000000111111") = (DECODE_OP(oric) & "111111")
