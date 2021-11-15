@@ -232,7 +232,7 @@ begin
   generic map ( N => 32 )
   port map(
     i_S => iRST,
-    i_D0 => next_ins_MEM,
+    i_D0 => final_addr,
     i_D1 => x"00400000",
     o_O => s_NextInstAddr
   );
@@ -466,8 +466,6 @@ port map( i_S => control_sigs_EX(25),
                 i_D0 => jump_result_addr,
                 i_D1 => rs_EX,
                 o_O => final_addr);
-
-  s_NextInstAddr <= final_addr;
 
 -- Execute state registers
 
