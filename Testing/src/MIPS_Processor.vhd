@@ -246,7 +246,7 @@ begin
     i_CLK => iCLK,
     i_RST => '0',
     i_WE => '1',
-    reset_value => x"00400000"
+    reset_value => x"00400000",
     i_D => s_NextInstAddr,
     o_Q => s_IMemAddr
   );
