@@ -233,7 +233,7 @@ begin
     i_D0 => next_ins_MEM,
     i_D1 => x"00400000",
     o_O => s_NextInstAddr
-  )
+  );
 
   PC: dffg_N
   generic map(N => 32)
@@ -249,13 +249,13 @@ begin
   port map(i_A    => s_IMemAddr,
            i_B    => x"00000004",
            o_S    => next_ins_F,
-           ovfl => '-');
+           ovfl => open);
 
   return_addr: Ripple_Adder
   port map(i_A    => s_IMemAddr,
           i_B    => x"00000004",
           o_S    => jal_return_F,
-          ovfl => '-');   
+          ovfl => open);   
           
   raw_ins_F <= s_Inst;
 
