@@ -287,7 +287,7 @@ begin
   generic map(N => 96)
   port map(
     i_CLK => iCLK,
-    i_RST => '0',
+    i_RST => iRST,
     i_WE => '1',
     i_D(31 downto 0) => raw_ins_F,
     i_D(63 downto 32) => jal_return_F,
