@@ -61,7 +61,7 @@ end  MIPS_Processor;
     signal next_ins_D              : std_logic_vector(N-1 downto 0);
     signal jal_return_D            : std_logic_vector(N-1 downto 0);
     signal raw_ins_D               : std_logic_vector(N-1 downto 0);
-    signal control_sigs_D          : std_logic_vector(30 downto 0);
+    signal control_sigs_D          : std_logic_vector(30 downto 0)  := "000" & x"0000000";
 
 
     signal rs_D              : std_logic_vector(N-1 downto 0);
@@ -74,7 +74,7 @@ end  MIPS_Processor;
   signal next_ins_EX             : std_logic_vector(N-1 downto 0);
   signal jal_return_EX           : std_logic_vector(N-1 downto 0);
   signal raw_ins_EX              : std_logic_vector(N-1 downto 0);
-  signal control_sigs_EX         : std_logic_vector(30 downto 0);
+  signal control_sigs_EX         : std_logic_vector(30 downto 0) := "000" & x"0000000";
   signal alu_out_EX              : std_logic_vector(N-1 downto 0);
   signal wb_data_EX               : std_logic_vector(N-1 downto 0);
 
