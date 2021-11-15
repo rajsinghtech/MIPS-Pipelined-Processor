@@ -38,7 +38,7 @@ end  MIPS_Processor;
 
     -- Required instruction memory signals
     signal s_IMemAddr     : std_logic_vector(N-1 downto 0); -- Do not assign this signal, assign to s_NextInstAddr instead
-    signal s_NextInstAddr : std_logic_vector(N-1 downto 0) := x"0003FFF8"; -- TODO: use this signal as your intended final instruction memory address input.
+    signal s_NextInstAddr : std_logic_vector(N-1 downto 0) := x"00400000"; -- TODO: use this signal as your intended final instruction memory address input.
     signal s_Inst         : std_logic_vector(N-1 downto 0); -- TODO: use this signal as the instruction signal 
 
     -- Required halt signal -- for simulation
@@ -244,7 +244,7 @@ begin
   generic map(N => 32)
   port map(
     i_CLK => iCLK,
-    i_RST => '0',
+    i_RST => iRST,
     i_WE => '1',
     reset_value => x"00400000",
     i_D => s_NextInstAddr,
