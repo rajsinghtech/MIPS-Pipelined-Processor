@@ -61,7 +61,7 @@ end  MIPS_Processor;
     signal next_ins_D              : std_logic_vector(N-1 downto 0);
     signal jal_return_D            : std_logic_vector(N-1 downto 0);
     signal raw_ins_D               : std_logic_vector(N-1 downto 0);
-    signal control_sigs_D          : std_logic_vector(30 downto 0)  := "000" & x"0000000";
+    signal control_sigs_D          : std_logic_vector(30 downto 0);
 
 
     signal rs_D              : std_logic_vector(N-1 downto 0);
@@ -74,7 +74,7 @@ end  MIPS_Processor;
   signal next_ins_EX             : std_logic_vector(N-1 downto 0);
   signal jal_return_EX           : std_logic_vector(N-1 downto 0);
   signal raw_ins_EX              : std_logic_vector(N-1 downto 0);
-  signal control_sigs_EX         : std_logic_vector(30 downto 0) := "000" & x"0000000";
+  signal control_sigs_EX         : std_logic_vector(30 downto 0);
   signal alu_out_EX              : std_logic_vector(N-1 downto 0);
   signal wb_data_EX               : std_logic_vector(N-1 downto 0);
 
@@ -343,7 +343,7 @@ raw_ins_D <= fetch_stage_reg(31 downto 0);
     generic map(N => 191)
     port map(
       i_CLK => iCLK,
-      i_RST => '0',
+      i_RST => iRST,
       i_WE => '1',
       i_D(31 downto 0) => raw_ins_D,
       i_D(63 downto 32) => jal_return_D,
@@ -477,7 +477,7 @@ port map( i_S => control_sigs_EX(27),
   generic map(N => 73)
   port map(
     i_CLK => iCLK,
-    i_RST => '0',
+    i_RST => iRST,
     i_WE => '1',
     i_D(31 downto 0) => wb_data_EX,        -- alu out
     i_D(63 downto 32) => rt_EX,            -- jump address
@@ -526,7 +526,7 @@ MEM_WB_Reg: dffg_N
 generic map(N => 39)
 port map(
   i_CLK => iCLK,
-  i_RST => '0',
+  i_RST => iRST,
   i_WE => '1',
   i_D(31 downto 0) => wb_data_MEM,        -- write back data
   i_D(36 downto 32) => wb_addr_MEM,  -- write back address
