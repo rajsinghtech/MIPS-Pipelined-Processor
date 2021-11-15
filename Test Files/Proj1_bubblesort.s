@@ -14,19 +14,19 @@ vals_length: .word 10                    # address: 0x10010028
 # $s5 => &arr[j]
 # $s6 => &arr[j+1]
 main:
-    # s0 => vals
-    # this is a pseudo instruction (2 instructions)
-    lui $s0, 0x1001
+    
     # s1 => vals_length
-    # this is a pseudo instruction (2 instructions)
     lui $s1, 0x1001
+    # s0 => vals
+    lui $s0, 0x1001
+    # i($s2) = 0
+    addi $s2, $zero, 0
     ori $s1, $s1, 0x0028
-
+    nop
+    nop
     lw $s1, 0($s1)
     
     # outer loop
-    # i($s2) = 0
-    addi $s2, $zero, 0
 outer_loop_cond:
     addi $t0, $s1, -1
     # $t1 = i < n - 1
