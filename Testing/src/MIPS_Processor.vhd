@@ -265,10 +265,6 @@ begin
           
   raw_ins_F <= s_Inst;
 
-  with iInstLd select
-  s_IMemAddr <= s_NextInstAddr when '0',
-    iInstAddr when others;
-
 
   IMem: mem
   generic map(ADDR_WIDTH => 10,
