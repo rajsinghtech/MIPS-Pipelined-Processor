@@ -339,7 +339,7 @@ raw_ins_D <= fetch_stage_reg(31 downto 0);
 
 
     ID_EX_Reg: dffg_N
-    generic map(N => 191)
+    generic map(N => 192)
     port map(
       i_CLK => iCLK,
       i_RST => '0',
@@ -347,9 +347,9 @@ raw_ins_D <= fetch_stage_reg(31 downto 0);
       i_D(31 downto 0) => raw_ins_D,
       i_D(63 downto 32) => jal_return_D,
       i_D(95 downto 64) => next_ins_D,
-      i_D(126 downto 96) => control_sigs_D,
-      i_D(158 downto 127) => rs_D,
-      i_D(190 downto 159) => rt_D,
+      i_D(127 downto 96) => control_sigs_D,
+      i_D(159 downto 128) => rs_D,
+      i_D(191 downto 160) => rt_D,
       o_Q => decode_stage_reg
     );
 
@@ -358,10 +358,10 @@ raw_ins_D <= fetch_stage_reg(31 downto 0);
 raw_ins_EX <= decode_stage_reg(31 downto 0);
 jal_return_EX <= decode_stage_reg(63 downto 32);
 next_ins_EX <= decode_stage_reg(95 downto 64);
-control_sigs_EX <= decode_stage_reg(126 downto 96);
+control_sigs_EX <= decode_stage_reg(127 downto 96);
 
-rs_EX <= decode_stage_reg(158 downto 127);
-rt_EX <= decode_stage_reg(190 downto 159);
+rs_EX <= decode_stage_reg(159 downto 128);
+rt_EX <= decode_stage_reg(191 downto 160);
 
 wb_addr_select: mux2t1_N
 generic map ( N => 5 ) 
@@ -451,7 +451,7 @@ port map( i_S => control_sigs_EX(25),
                 o_O => branch_result_addr);
 
 
-  jump_calc_addr <= next_ins_EX(31 downto 28) & raw_ins_EX(26 downto 0) & "00";
+  jump_calc_addr <= next_ins_EX(31 downto 28) & raw_ins_EX(25 downto 0) & "00";
 
   jump_select: mux2t1_N
   generic map ( N => 32 ) 
