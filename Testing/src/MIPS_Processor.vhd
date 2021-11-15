@@ -224,25 +224,29 @@ end  MIPS_Processor;
               o_Q          : out std_logic_vector( N - 1 downto 0));   -- Data value output
       end component;
 
+      component dffg_N_with_reset
+        generic( N: integer );
+        port(i_CLK        : in std_logic;     -- Clock input
+             i_RST        : in std_logic;     -- Reset input
+             i_WE         : in std_logic;     -- Write enable input
+             reset_value  : in std_logic_vector( N - 1 downto 0);
+             i_D          : in std_logic_vector( N - 1 downto 0);     -- Data value input
+             o_Q          : out std_logic_vector( N - 1 downto 0));   -- Data value output
+      
+      end component;      
+
 begin
 
 -- Fetch stage
 
-  PC_INIT_MUX: mux2t1_N
-  generic map ( N => 32 )
-  port map(
-    i_S => iRST,
-    i_D0 => final_addr,
-    i_D1 => x"00400000",
-    o_O => s_NextInstAddr
-  );
 
-  PC: dffg_N
+  PC: dffg_N_with_reset
   generic map(N => 32)
   port map(
     i_CLK => iCLK,
     i_RST => '0',
     i_WE => '1',
+    reset_value => x"00400000"
     i_D => s_NextInstAddr,
     o_Q => s_IMemAddr
   );
