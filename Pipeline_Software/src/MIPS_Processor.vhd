@@ -339,17 +339,17 @@ raw_ins_D <= fetch_stage_reg(31 downto 0);
 
 
     ID_EX_Reg: dffg_N
-    generic map(N => 192)
+    generic map(N => 191)
     port map(
       i_CLK => iCLK,
       i_RST => '0',
       i_WE => '1',
-      i_D(31 downto 0) => fetch_stage_reg(31 downto 0),
+      i_D(31 downto 0) => raw_ins_D,
       i_D(63 downto 32) => jal_return_D,
       i_D(95 downto 64) => next_ins_D,
-      i_D(127 downto 96) => control_sigs_D,
-      i_D(159 downto 128) => rs_D,
-      i_D(191 downto 160) => rt_D,
+      i_D(126 downto 96) => control_sigs_D,
+      i_D(158 downto 127) => rs_D,
+      i_D(190 downto 159) => rt_D,
       o_Q => decode_stage_reg
     );
 
