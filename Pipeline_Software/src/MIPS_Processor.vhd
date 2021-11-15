@@ -67,7 +67,7 @@ end  MIPS_Processor;
     signal rs_D              : std_logic_vector(N-1 downto 0);
     signal rt_D              : std_logic_vector(N-1 downto 0);
 
-    signal decode_stage_reg         : std_logic_vector( 191 downto 0);
+    signal decode_stage_reg         : std_logic_vector( 190 downto 0);
 
   -- Execute signals
 
