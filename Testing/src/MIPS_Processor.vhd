@@ -109,6 +109,7 @@ end  MIPS_Processor;
   signal wb_data_MEM             : std_logic_vector(N-1 downto 0);
   signal wb_addr_MEM                  : std_logic_vector(4 downto 0);
 
+
   signal mem_write_MEM            : std_logic;
   signal mem_to_reg_MEM         : std_logic;
   signal halt_MEM      : std_logic;
@@ -495,7 +496,7 @@ mem_to_reg_MEM <= execute_stage_reg(70);
 halt_MEM <=       execute_stage_reg(71);
 reg_write_MEM <=  execute_stage_reg(72);
 
-final_wb_addr_EX <= execute_stage_reg(68 downto 64);
+wb_addr_MEM <= execute_stage_reg(68 downto 64);
 
 
 s_DMemWr <= mem_write_MEM;
@@ -528,7 +529,7 @@ port map(
   i_RST => '0',
   i_WE => '1',
   i_D(31 downto 0) => wb_data_MEM,        -- write back data
-  i_D(36 downto 32) => final_wb_addr_EX,  -- write back address
+  i_D(36 downto 32) => wb_addr_MEM,  -- write back address
   i_D(37) => halt_MEM,                    -- halt
   i_D(38) => reg_write_MEM,               -- reg_write
   o_Q => mem_stage_reg
