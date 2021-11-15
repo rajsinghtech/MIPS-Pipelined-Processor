@@ -410,7 +410,7 @@ INVG0: invg port MAP (i_A => ALU_zero,
 
 jal_wb_select: mux2t1_N
 generic map ( N => 32 ) 
-port map( i_S => control_sigs_EX(25),
+port map( i_S => control_sigs_EX(27),
               i_D0 => alu_out_EX,
               i_D1 => jal_return_EX,
               o_O => wb_data_EX);
