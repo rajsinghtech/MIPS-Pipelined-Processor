@@ -373,7 +373,7 @@ port map( i_S => control_sigs_EX(25),
 
 link_select: mux2t1_N
 generic map ( N => 5 ) 
-port map( i_S => control_sigs_EX(25),
+port map( i_S => control_sigs_EX(27),
               i_D0 => wb_addr_EX,
               i_D1 => "11111",
               o_O => final_wb_addr_EX);
