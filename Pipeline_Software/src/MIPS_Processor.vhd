@@ -98,7 +98,7 @@ end  MIPS_Processor;
   signal branch_pass        : std_logic;
   signal take_branch        : std_logic;
 
-  signal execute_stage_reg         : std_logic_vector( 104 downto 0);
+  signal execute_stage_reg         : std_logic_vector( 72 downto 0);
 
 
   -- Memory Signals
@@ -467,40 +467,40 @@ port map( i_S => control_sigs_EX(25),
                 i_D1 => rs_EX,
                 o_O => final_addr);
 
+  s_NextInstAddr <= final_addr;
 
 -- Execute state registers
 
 
   EX_MEM_Reg: dffg_N
-  generic map(N => 105)
+  generic map(N => 73)
   port map(
     i_CLK => iCLK,
     i_RST => '0',
     i_WE => '1',
-    i_D(31 downto 0) => wb_data_EX,         -- alu out
-    i_D(63 downto 32) => final_addr,        -- jump address
-    i_D(95 downto 64) => rt_EX,             -- mem write data
-    i_D(100 downto 96) => final_wb_addr_EX, -- write back address
-    i_D(101) => control_sigs_EX(26),        -- mem write sig
-    i_D(102) => control_sigs_EX(2),         -- mem to reg sig
-    i_D(103) => control_sigs_EX(30),        -- halt sig
-    i_D(104) => control_sigs_EX(11),        -- reg write sig
+    i_D(31 downto 0) => wb_data_EX,        -- alu out
+    i_D(63 downto 32) => rt_EX,            -- jump address
+    i_D(68 downto 64) => final_wb_addr_EX, -- mem write data
+    i_D(69) => control_sigs_EX(26),        -- mem write sig
+    i_D(70) => control_sigs_EX(2),         -- mem to reg sig
+    i_D(71) => control_sigs_EX(30),        -- halt sig
+    i_D(72) => control_sigs_EX(11),        -- reg write sig
     o_Q => execute_stage_reg
   );
 
 -- Memory stage
 
-s_NextInstAddr <= execute_stage_reg(63 downto 32);
+mem_write_MEM <=  execute_stage_reg(69);
+mem_to_reg_MEM <= execute_stage_reg(70);
+halt_MEM <=       execute_stage_reg(71);
+reg_write_MEM <=  execute_stage_reg(72);
 
-mem_write_MEM <=  execute_stage_reg(26);
-mem_to_reg_MEM <= execute_stage_reg(2);
-halt_MEM <=       execute_stage_reg(30);
-reg_write_MEM <=  execute_stage_reg(11);
+final_wb_addr_EX <= execute_stage_reg(68 downto 64);
 
 
 s_DMemWr <= mem_write_MEM;
 s_DMemAddr <= execute_stage_reg(31 downto 0);
-s_DMemData <= execute_stage_reg(95 downto 64);
+s_DMemData <= execute_stage_reg(63 downto 32);
 
   DMem: mem
   generic map(ADDR_WIDTH => 10,
