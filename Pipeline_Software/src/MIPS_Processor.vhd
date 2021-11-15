@@ -83,8 +83,10 @@ end  MIPS_Processor;
   signal sign_ext_imm       : std_logic_vector(N-1 downto 0);
   signal alu_b              : std_logic_vector(N-1 downto 0);
 
+  signal branch_immediate   : std_logic_vector(N-1 downto 0);
   signal branch_addr        : std_logic_vector(N-1 downto 0);
   signal branch_result_addr : std_logic_vector(N-1 downto 0);
+  signal jump_calc_addr     : std_logic_vector(N-1 downto 0);
   signal jump_result_addr   : std_logic_vector(N-1 downto 0);
   signal final_addr         : std_logic_vector(N-1 downto 0);
   
@@ -238,7 +240,7 @@ begin
   PC: dffg_N
   generic map(N => 32)
   port map(
-    i_CLK => i_clk,
+    i_CLK => iCLK,
     i_RST => '0',
     i_WE => '1',
     i_D => s_NextInstAddr,
@@ -283,7 +285,7 @@ begin
   IF_ID_Reg: dffg_N
   generic map(N => 96)
   port map(
-    i_CLK => i_clk,
+    i_CLK => iCLK,
     i_RST => '0',
     i_WE => '1',
     i_D(31 downto 0) => raw_ins_F,
@@ -345,7 +347,7 @@ raw_ins_D <= fetch_stage_reg(31 downto 0);
       i_D(31 downto 0) => raw_ins_D,
       i_D(63 downto 32) => jal_return_D,
       i_D(95 downto 64) => next_ins_D,
-      i_D(126 downto 96) => control_sigs_D
+      i_D(126 downto 96) => control_sigs_D,
       i_D(158 downto 127) => rs_D,
       i_D(190 downto 159) => rt_D,
       o_Q => decode_stage_reg
@@ -368,7 +370,7 @@ port map( i_S => control_sigs_EX(25),
               i_D1 => raw_ins_EX(20 downto 16),
               o_O => wb_addr_EX);
 
-wb_addr_select: mux2t1_N
+link_select: mux2t1_N
 generic map ( N => 5 ) 
 port map( i_S => control_sigs_EX(25),
               i_D0 => wb_addr_EX,
@@ -416,11 +418,13 @@ port map( i_S => control_sigs_EX(25),
 
 -- Branch calculation
 
+  branch_immediate <= sign_ext_imm(29 downto 0) & "00";
+
   rippleadder: Ripple_Adder
   port map(i_A    => next_ins_EX,
-          i_B    => sign_ext_imm(29 downto 0) & "00",
+          i_B    => branch_immediate,
           o_S    => branch_addr,
-          ovfl => '-');
+          ovfl => open);
 
 
 -- Branch pass ?
@@ -447,11 +451,13 @@ port map( i_S => control_sigs_EX(25),
                 o_O => branch_result_addr);
 
 
+  jump_calc_addr <= next_ins_EX(31 downto 28) & raw_ins_EX(26 downto 0) & "00";
+
   jump_select: mux2t1_N
   generic map ( N => 32 ) 
   port map( i_S => control_sigs_EX(0), -- jump signal
                 i_D0 => branch_result_addr,
-                i_D1 => next_ins_EX(31 downto 28) & raw_ins_EX(26 downto 0) & "00",
+                i_D1 => jump_calc_addr,
                 o_O => jump_result_addr);
 
   jr_select: mux2t1_N
@@ -468,7 +474,7 @@ port map( i_S => control_sigs_EX(25),
   EX_MEM_Reg: dffg_N
   generic map(N => 105)
   port map(
-    i_CLK => i_clk,
+    i_CLK => iCLK,
     i_RST => '0',
     i_WE => '1',
     i_D(31 downto 0) => wb_data_EX,         -- alu out
@@ -518,7 +524,7 @@ s_DMemData <= execute_stage_reg(95 downto 64);
 MEM_WB_Reg: dffg_N
 generic map(N => 39)
 port map(
-  i_CLK => i_clk,
+  i_CLK => iCLK,
   i_RST => '0',
   i_WE => '1',
   i_D(31 downto 0) => wb_data_MEM,        -- write back data
