@@ -471,6 +471,8 @@ port map( i_S => control_sigs_EX(25),
                 i_D1 => rs_EX,
                 o_O => final_addr);
 
+  s_NextInstAddr <= final_addr;
+
 -- Execute state registers
 
 
