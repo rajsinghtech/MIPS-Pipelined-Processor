@@ -1,7 +1,7 @@
 .data
 .align 2
-vals: .word 25 1 4 10 381 42 100 60 0 12
-vals_length: .word 10
+vals: .word 25 1 4 10 381 42 100 60 0 12 # address: 0x10010000
+vals_length: .word 10                    # address: 0x10010028
 .text
 .globl main
 
@@ -16,10 +16,12 @@ vals_length: .word 10
 main:
     # s0 => vals
     # this is a pseudo instruction (2 instructions)
-    la $s0, vals
+    lui $s0, 0x1001
     # s1 => vals_length
     # this is a pseudo instruction (2 instructions)
-    la $s1, vals_length
+    lui $s1, 0x1001
+    ori $s1, $s1, 0x0028
+
     lw $s1, 0($s1)
     
     # outer loop
