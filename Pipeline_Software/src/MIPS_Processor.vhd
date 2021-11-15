@@ -74,7 +74,7 @@ end  MIPS_Processor;
   signal next_ins_EX             : std_logic_vector(N-1 downto 0);
   signal jal_return_EX           : std_logic_vector(N-1 downto 0);
   signal raw_ins_EX              : std_logic_vector(N-1 downto 0);
-  signal control_sigs_EX         : std_logic_vector(N-1 downto 0);
+  signal control_sigs_EX         : std_logic_vector(30 downto 0);
   signal alu_out_EX              : std_logic_vector(N-1 downto 0);
   signal wb_data_EX               : std_logic_vector(N-1 downto 0);
 
