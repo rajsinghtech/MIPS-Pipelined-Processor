@@ -214,7 +214,7 @@ end  MIPS_Processor;
         end component;
 
         component dffg_N
-        generic( N : integer )
+        generic( N : integer );
         port(i_CLK        : in std_logic;     -- Clock input
              i_RST        : in std_logic;     -- Reset input
              i_WE         : in std_logic;     -- Write enable input
