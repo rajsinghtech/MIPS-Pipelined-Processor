@@ -47,35 +47,76 @@ end  MIPS_Processor;
     -- Required overflow signal -- for overflow exception detection
     signal s_Ovfl         : std_logic;  -- TODO: this signal indicates an overflow exception would have been initiated
       
-    signal rs              : std_logic_vector(N-1 downto 0);
-    signal rt              : std_logic_vector(N-1 downto 0);
-    signal wb_data         : std_logic_vector(N-1 downto 0);
-    signal wb_addr         : std_logic_vector(4 downto 0);
-    signal shamt         : std_logic_vector(4 downto 0);
-    signal return_addr     : std_logic_vector(N-1 downto 0);
-    signal alu_b           : std_logic_vector(N-1 downto 0);
-    signal sign_extend_imm : std_logic_vector(N-1 downto 0);
-    signal alu_op          : std_logic_vector(OP_CODE_SIZE - 1 downto 0);
-    signal q_byte_imm      : std_logic_vector(7 downto 0);
-    signal halt         : std_logic;  --Becuase for some reason halt is always initialized to 1, even when explicitely set
+
+    -- Fetch signals
+
+    signal next_ins_F              : std_logic_vector(N-1 downto 0);
+    signal jal_return_F            : std_logic_vector(N-1 downto 0);
+    signal raw_ins_F               : std_logic_vector(N-1 downto 0);
+
+    signal fetch_stage_reg         : std_logic_vector( 95 downto 0);
+
+    -- Decode Signals
     
-    
-    signal branch         : std_logic;
-    signal jump           : std_logic;
-    signal jmpIns         : std_logic;
-    signal mem_to_reg     : std_logic;
-    signal reg_dst        : std_logic;
-    signal link           : std_logic;
-    signal alu_src        : std_logic;
-    signal ALU_zero       : std_logic;
-    signal ALU_not_zero   : std_logic;
-    signal branch_pass    : std_logic;
-    signal ext_type       : std_logic;
-    signal take_branch    : std_logic;
-    signal bne            : std_logic;
-    
-    signal  dont_care : std_logic;
-    signal  dont_care1 : std_logic;
+    signal next_ins_D              : std_logic_vector(N-1 downto 0);
+    signal jal_return_D            : std_logic_vector(N-1 downto 0);
+    signal raw_ins_D               : std_logic_vector(N-1 downto 0);
+    signal control_sigs_D          : std_logic_vector(30 downto 0);
+
+
+    signal rs_D              : std_logic_vector(N-1 downto 0);
+    signal rt_D              : std_logic_vector(N-1 downto 0);
+
+    signal decode_stage_reg         : std_logic_vector( 190 downto 0);
+
+  -- Execute signals
+
+  signal next_ins_EX             : std_logic_vector(N-1 downto 0);
+  signal jal_return_EX           : std_logic_vector(N-1 downto 0);
+  signal raw_ins_EX              : std_logic_vector(N-1 downto 0);
+  signal control_sigs_EX         : std_logic_vector(30 downto 0);
+  signal alu_out_EX              : std_logic_vector(N-1 downto 0);
+  signal wb_data_EX               : std_logic_vector(N-1 downto 0);
+
+  signal rs_EX              : std_logic_vector(N-1 downto 0);
+  signal rt_EX              : std_logic_vector(N-1 downto 0);
+  signal sign_ext_imm       : std_logic_vector(N-1 downto 0);
+  signal alu_b              : std_logic_vector(N-1 downto 0);
+
+  signal branch_immediate   : std_logic_vector(N-1 downto 0);
+  signal branch_addr        : std_logic_vector(N-1 downto 0);
+  signal branch_result_addr : std_logic_vector(N-1 downto 0);
+  signal jump_calc_addr     : std_logic_vector(N-1 downto 0);
+  signal jump_result_addr   : std_logic_vector(N-1 downto 0);
+  signal final_addr         : std_logic_vector(N-1 downto 0);
+  
+  signal wb_addr_EX       : std_logic_vector(4 downto 0);
+  signal final_wb_addr_EX : std_logic_vector(4 downto 0);
+
+  signal ALU_zero           : std_logic;
+  signal ALU_not_zero       : std_logic;
+  signal branch_pass        : std_logic;
+  signal take_branch        : std_logic;
+
+  signal execute_stage_reg         : std_logic_vector( 72 downto 0);
+
+
+  -- Memory Signals
+
+  signal next_ins_MEM             : std_logic_vector(N-1 downto 0);
+  signal alu_out_MEM             : std_logic_vector(N-1 downto 0);
+  signal mem_out_MEM             : std_logic_vector(N-1 downto 0);
+  signal wb_data_MEM             : std_logic_vector(N-1 downto 0);
+  signal wb_addr_MEM                  : std_logic_vector(4 downto 0);
+
+  signal mem_write_MEM            : std_logic;
+  signal mem_to_reg_MEM         : std_logic;
+  signal halt_MEM      : std_logic;
+  signal reg_write_MEM      : std_logic;
+
+  -- Write Back signals
+
+  signal mem_stage_reg         : std_logic_vector( 38 downto 0);
 
     component ALU is
         port(i_A : in std_logic_vector(WORD_SIZE - 1 downto 0);
@@ -87,21 +128,6 @@ end  MIPS_Processor;
             ovfl : out std_logic;
             o_S : out std_logic_vector(WORD_SIZE - 1 downto 0));
   
-      end component;
-
-      component fetch_logic is
-        port (
-          i_instr : in std_logic_vector( WORD_SIZE - 1 downto 0 );
-          i_addr: in std_logic_vector( WORD_SIZE - 1 downto 0 );
-          i_clk : in std_logic;
-          i_rst : in std_logic;
-          jmp_imm : in std_logic_vector( 25 downto 0);
-          branch_pass : in std_logic;
-          jump : in std_logic;
-          jmp_ins : in std_logic;
-          next_addr : out std_logic_vector( WORD_SIZE - 1 downto 0 )
-        );
-
       end component;
 
       component decode_logic is
@@ -189,93 +215,113 @@ end  MIPS_Processor;
               q            : out std_logic_vector((DATA_WIDTH -1) downto 0));
         end component;
 
+        component dffg_N
+        generic( N : integer );
+        port(i_CLK        : in std_logic;     -- Clock input
+             i_RST        : in std_logic;     -- Reset input
+             i_WE         : in std_logic;     -- Write enable input
+              i_D          : in std_logic_vector( N - 1 downto 0);     -- Data value input
+              o_Q          : out std_logic_vector( N - 1 downto 0));   -- Data value output
+      end component;
 
 begin
 
-  FetchLogic: fetch_logic 
-  port MAP (i_instr => sign_extend_imm,
-            i_addr => rs,
-            i_rst => iRST,
-            i_clk => iCLK,
-            jmp_imm => s_Inst(25 downto 0),
-            branch_pass => take_branch,
-            jump => jump,
-            jmp_ins => jmpIns,
-            next_addr => s_NextInstAddr);
-            
+-- Fetch stage
+
+  PC_INIT_MUX: mux2t1_N
+  generic map ( N => 32 )
+  port map(
+    i_S => iRST,
+    i_D0 => final_addr,
+    i_D1 => x"00400000",
+    o_O => s_NextInstAddr
+  );
+
+  PC: dffg_N
+  generic map(N => 32)
+  port map(
+    i_CLK => iCLK,
+    i_RST => '0',
+    i_WE => '1',
+    i_D => s_NextInstAddr,
+    o_Q => s_IMemAddr
+  );
+
+  next_ins: Ripple_Adder
+  port map(i_A    => s_IMemAddr,
+           i_B    => x"00000004",
+           o_S    => next_ins_F,
+           ovfl => open);
+
+  return_addr: Ripple_Adder
+  port map(i_A    => s_IMemAddr,
+          i_B    => x"00000004",
+          o_S    => jal_return_F,
+          ovfl => open);   
+          
+  raw_ins_F <= s_Inst;
+
   with iInstLd select
-    s_IMemAddr <= s_NextInstAddr when '0',
-      iInstAddr when others;
+  s_IMemAddr <= s_NextInstAddr when '0',
+    iInstAddr when others;
 
 
   IMem: mem
-    generic map(ADDR_WIDTH => 10,
-                DATA_WIDTH => N)
-    port map(clk  => iCLK,
-             addr => s_IMemAddr(11 downto 2),
-             data => iInstExt,
-             we   => iInstLd,
-             q    => s_Inst);
-  
-  DMem: mem
-    generic map(ADDR_WIDTH => 10,
-                DATA_WIDTH => N)
-    port map(clk  => iCLK,
-             addr => s_DMemAddr(11 downto 2),
-             data => s_DMemData,
-             we   => s_DMemWr,
-             q    => s_DMemOut);
-    
-    s_DMemData <= rt;
+  generic map(ADDR_WIDTH => 10,
+              DATA_WIDTH => N)
+  port map(clk  => iCLK,
+           addr => s_IMemAddr(11 downto 2),
+           data => iInstExt,
+           we   => iInstLd,
+           q    => s_Inst);
 
-    wb_select_mux: mux2t1_N
-    generic map ( N => 5 ) 
-		port map( i_S => reg_dst,
-                  i_D0 => s_Inst(15 downto 11),
-                  i_D1 => s_Inst(20 downto 16),
-                  o_O => wb_addr);
-    
-    link_select_mux: mux2t1_N
-    generic map ( N => 5 ) 
-		port map( i_S => link,
-                  i_D0 => wb_addr,
-                  i_D1 => "1" & x"F",
-                  o_O => s_RegWrAddr);
-    
-    s_RegWrData_mux: mux2t1_N
-		generic map ( N => WORD_SIZE ) 
-		port map( i_S => link,
-                  i_D0 => wb_data,
-                  i_D1 => return_addr,
-                  o_O => s_RegWrData);
 
-    wb_data_mux: mux2t1_N
-		generic map ( N => WORD_SIZE ) 
-		port map( i_S => mem_to_reg,
-                  i_D0 => s_DMemAddr,
-                  i_D1 => s_DMemOut,
-                  o_O => wb_data);
+  -- IF/ID Stage registers
 
-    
-    immediate_select_mux: mux2t1_N
-		generic map ( N => WORD_SIZE ) 
-		port map( i_S => alu_src,
-                  i_D0 => rt,
-                  i_D1 => sign_extend_imm,
-                  o_O => alu_b);
+  -- 31 downto 0 = next_ins_F
+  -- 63 downto 32 = jal_return_F
+  -- 95 downto 64 = raw_ins_F
 
-    branch_type_mux: mux2t1
-		port map( i_S => bne,
-                  i_D0 => ALU_zero,
-                  i_D1 => ALU_not_zero,
-                  o_O => branch_pass);
-    
-    rippleadder: Ripple_Adder
-        port map(i_A    => s_IMemAddr,
-		      	     i_B    => x"00000004",
-                 o_S    => return_addr,
-                 ovfl => dont_care);
-    
+  IF_ID_Reg: dffg_N
+  generic map(N => 96)
+  port map(
+    i_CLK => iCLK,
+    i_RST => '0',
+    i_WE => '1',
+    i_D(31 downto 0) => raw_ins_F,
+    i_D(63 downto 32) => jal_return_F,
+    i_D(95 downto 64) => next_ins_F,
+    o_Q => fetch_stage_reg
+  );
+
+-- Decode Stage
+
+next_ins_D <= fetch_stage_reg(95 downto 64);
+jal_return_D <= fetch_stage_reg(63 downto 32);
+raw_ins_D <= fetch_stage_reg(31 downto 0);
+
+
+
+
+  DecodeLogic: decode_logic 
+  port MAP (i_instruction => raw_ins_EX,
+          o_jump => control_sigs_D(0),
+          o_branch => control_sigs_D(1),
+          o_memToReg => control_sigs_D(2),
+          o_ALUOP => control_sigs_D(8 downto 3),
+          o_ALUSrc => control_sigs_D(9),
+          o_jumpIns => control_sigs_D(10),
+          o_regWrite => control_sigs_D(11),
+          o_q_byte => control_sigs_D(19 downto 12),
+          o_shamt => control_sigs_D(24 downto 20),
+          reg_dst => control_sigs_D(25),
+          o_mem_write => control_sigs_D(26),
+          o_link => control_sigs_D(27),
+          o_ext_type => control_sigs_D(28),
+          o_bne => control_sigs_D(29),
+          o_halt => control_sigs_D(30));
+
+
     RegFile: RegisterFile 
         generic map ( NUM_SELECT => 5)
         port map(i_D => s_RegWrData, 
@@ -283,53 +329,215 @@ begin
                 i_CLK => iCLK,
                 i_RST => iRST,
                 i_WA => s_RegWrAddr,
-                i_RA0 => s_Inst(25 downto 21),
-                i_RA1 => s_Inst(20 downto 16),
-                o_D0 => rs,
-                o_D1 => rt);
+                i_RA0 => raw_ins_D(25 downto 21),
+                i_RA1 => raw_ins_D(20 downto 16),
+                o_D0 => rs_D,
+                o_D1 => rt_D);
 
-    INVG0: invg port MAP (i_A => ALU_zero, 
-                          o_F => ALU_not_zero);
 
-    ANDG0: andg2 port MAP (i_A => branch, 
-                           i_B => branch_pass, 
-                           o_F => take_branch);
-                                      
-    DecodeLogic: decode_logic 
-        port MAP (i_instruction => s_Inst,
-                  o_jump => jump,
-                  o_branch => branch,
-                  o_memToReg => mem_to_reg,
-                  o_ALUOP => alu_op,
-                  o_ALUSrc => alu_src,
-                  o_jumpIns => jmpIns,
-                  o_regWrite => s_RegWr,
-                  o_q_byte => q_byte_imm,
-                  o_shamt => shamt,
-                  reg_dst => reg_dst,
-                  o_mem_write => s_DMemWr,
-                  o_link => link,
-                  o_ext_type => ext_type,
-                  o_bne => bne,
-                  o_halt => s_Halt);
+-- Decode - Execute state registers
 
-    AluLogic: ALU 
-        port MAP (i_A => rs,
-                  i_B => alu_b,
-                  i_Shamt => shamt,
-                  i_ALUOP => alu_op,
-                  i_qByte => q_byte_imm,
-                  o_Zero => ALU_zero,
-                  ovfl => s_Ovfl,
-                  o_S => s_DMemAddr);
 
-    oALUOut <= s_DMemAddr;
-  
-    extender1: extender 
-        port MAP (i_A => s_Inst( 15 downto 0),
-                  type_select => ext_type,
-                  o_Q => sign_extend_imm);
+    ID_EX_Reg: dffg_N
+    generic map(N => 191)
+    port map(
+      i_CLK => iCLK,
+      i_RST => '0',
+      i_WE => '1',
+      i_D(31 downto 0) => raw_ins_D,
+      i_D(63 downto 32) => jal_return_D,
+      i_D(95 downto 64) => next_ins_D,
+      i_D(126 downto 96) => control_sigs_D,
+      i_D(158 downto 127) => rs_D,
+      i_D(190 downto 159) => rt_D,
+      o_Q => decode_stage_reg
+    );
 
-    
-    
+-- Execute Stage
+
+raw_ins_EX <= decode_stage_reg(31 downto 0);
+jal_return_EX <= decode_stage_reg(63 downto 32);
+next_ins_EX <= decode_stage_reg(95 downto 64);
+control_sigs_EX <= decode_stage_reg(126 downto 96);
+
+rs_EX <= decode_stage_reg(158 downto 127);
+rt_EX <= decode_stage_reg(190 downto 159);
+
+wb_addr_select: mux2t1_N
+generic map ( N => 5 ) 
+port map( i_S => control_sigs_EX(25),
+              i_D0 => raw_ins_EX(15 downto 11),
+              i_D1 => raw_ins_EX(20 downto 16),
+              o_O => wb_addr_EX);
+
+link_select: mux2t1_N
+generic map ( N => 5 ) 
+port map( i_S => control_sigs_EX(25),
+              i_D0 => wb_addr_EX,
+              i_D1 => "11111",
+              o_O => final_wb_addr_EX);
+
+-- arithmetic operations --------------------------------------
+
+sign_extend: extender 
+port MAP (i_A => raw_ins_EX( 15 downto 0),
+          type_select => control_sigs_EX(28), -- sign extend signal
+          o_Q => sign_ext_imm);
+
+
+alu_b_select: mux2t1_N
+generic map ( N => 32 ) 
+port map( i_S => control_sigs_EX(9),
+              i_D0 => rt_EX,
+              i_D1 => sign_ext_imm,
+              o_O => alu_b);
+
+AluLogic: ALU 
+port MAP (i_A => rs_EX,
+          i_B => alu_b,
+          i_Shamt => raw_ins_EX(10 downto 6),
+          i_ALUOP => control_sigs_EX(8 downto 3),
+          i_qByte => control_sigs_EX(19 downto 12),
+          o_Zero => ALU_zero,
+          ovfl => s_Ovfl,
+          o_S => alu_out_EX);
+
+
+INVG0: invg port MAP (i_A => ALU_zero, 
+                      o_F => ALU_not_zero);
+
+
+jal_wb_select: mux2t1_N
+generic map ( N => 32 ) 
+port map( i_S => control_sigs_EX(25),
+              i_D0 => alu_out_EX,
+              i_D1 => jal_return_EX,
+              o_O => wb_data_EX);
+
+-- address calculation --------------------------------------
+
+-- Branch calculation
+
+  branch_immediate <= sign_ext_imm(29 downto 0) & "00";
+
+  rippleadder: Ripple_Adder
+  port map(i_A    => next_ins_EX,
+          i_B    => branch_immediate,
+          o_S    => branch_addr,
+          ovfl => open);
+
+
+-- Branch pass ?
+
+  branch_type_mux: mux2t1
+  port map( i_S => control_sigs_EX(29), -- bne signal
+                i_D0 => ALU_zero,
+                i_D1 => ALU_not_zero,
+                o_O => branch_pass);
+
+
+  ANDG0: andg2 port MAP (i_A => control_sigs_EX(1), -- branch signal
+          i_B => branch_pass, 
+          o_F => take_branch);
+
+
+-- address select muxes
+
+  branch_select: mux2t1_N
+  generic map ( N => 32 ) 
+  port map( i_S => take_branch,
+                i_D0 => next_ins_EX,
+                i_D1 => branch_addr,
+                o_O => branch_result_addr);
+
+
+  jump_calc_addr <= next_ins_EX(31 downto 28) & raw_ins_EX(25 downto 0) & "00";
+
+  jump_select: mux2t1_N
+  generic map ( N => 32 ) 
+  port map( i_S => control_sigs_EX(0), -- jump signal
+                i_D0 => branch_result_addr,
+                i_D1 => jump_calc_addr,
+                o_O => jump_result_addr);
+
+  jr_select: mux2t1_N
+  generic map ( N => 32 ) 
+  port map( i_S => control_sigs_EX(10), -- jr signal
+                i_D0 => jump_result_addr,
+                i_D1 => rs_EX,
+                o_O => final_addr);
+
+-- Execute state registers
+
+
+  EX_MEM_Reg: dffg_N
+  generic map(N => 73)
+  port map(
+    i_CLK => iCLK,
+    i_RST => '0',
+    i_WE => '1',
+    i_D(31 downto 0) => wb_data_EX,        -- alu out
+    i_D(63 downto 32) => rt_EX,            -- jump address
+    i_D(68 downto 64) => final_wb_addr_EX, -- mem write data
+    i_D(69) => control_sigs_EX(26),        -- mem write sig
+    i_D(70) => control_sigs_EX(2),         -- mem to reg sig
+    i_D(71) => control_sigs_EX(30),        -- halt sig
+    i_D(72) => control_sigs_EX(11),        -- reg write sig
+    o_Q => execute_stage_reg
+  );
+
+-- Memory stage
+
+mem_write_MEM <=  execute_stage_reg(69);
+mem_to_reg_MEM <= execute_stage_reg(70);
+halt_MEM <=       execute_stage_reg(71);
+reg_write_MEM <=  execute_stage_reg(72);
+
+final_wb_addr_EX <= execute_stage_reg(68 downto 64);
+
+
+s_DMemWr <= mem_write_MEM;
+s_DMemAddr <= execute_stage_reg(31 downto 0);
+s_DMemData <= execute_stage_reg(63 downto 32);
+
+  DMem: mem
+  generic map(ADDR_WIDTH => 10,
+              DATA_WIDTH => N)
+  port map(clk  => iCLK,
+           addr => s_DMemAddr(11 downto 2),
+           data => s_DMemData,
+           we   => s_DMemWr,
+           q    => s_DMemOut);  
+
+  mem_wb_data_select: mux2t1_N
+  generic map ( N => 32 ) 
+  port map( i_S => mem_to_reg_MEM, -- jump signal
+                i_D0 => execute_stage_reg(31 downto 0),
+                i_D1 => s_DMemOut,
+                o_O => wb_data_MEM);    
+
+-- Memory state registers
+
+
+MEM_WB_Reg: dffg_N
+generic map(N => 39)
+port map(
+  i_CLK => iCLK,
+  i_RST => '0',
+  i_WE => '1',
+  i_D(31 downto 0) => wb_data_MEM,        -- write back data
+  i_D(36 downto 32) => final_wb_addr_EX,  -- write back address
+  i_D(37) => halt_MEM,                    -- halt
+  i_D(38) => reg_write_MEM,               -- reg_write
+  o_Q => mem_stage_reg
+);
+
+
+-- Write back stage
+
+s_RegWr <= mem_stage_reg(38);
+s_RegWrAddr <= mem_stage_reg(36 downto 32);
+s_RegWrData <= mem_stage_reg(31 downto 0);
+s_Halt <= mem_stage_reg(37);
+
 end structure;
