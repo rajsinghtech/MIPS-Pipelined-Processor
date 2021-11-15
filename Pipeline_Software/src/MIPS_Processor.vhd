@@ -341,7 +341,7 @@ raw_ins_D <= fetch_stage_reg(31 downto 0);
     ID_EX_Reg: dffg_N
     generic map(N => 191)
     port map(
-      i_CLK => i_clk,
+      i_CLK => iCLK,
       i_RST => '0',
       i_WE => '1',
       i_D(31 downto 0) => raw_ins_D,
