@@ -446,7 +446,7 @@ port map( i_S => control_sigs_EX(25),
   branch_select: mux2t1_N
   generic map ( N => 32 ) 
   port map( i_S => take_branch,
-                i_D0 => next_ins_EX,
+                i_D0 => next_ins_F,
                 i_D1 => branch_addr,
                 o_O => branch_result_addr);
 
