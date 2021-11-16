@@ -431,6 +431,7 @@ forwarding_logic: forwarding_unit
       rt_select   => alu_select_b);
 
 alu_a_select: mux4t1_N
+generic map ( N => 32 ) 
 port map( i_S => alu_select_a,
               i_D0 => rs_EX,
               i_D1 => wb_data_MEM,
@@ -439,6 +440,7 @@ port map( i_S => alu_select_a,
               o_O => alu_a);
 
 alu_b_select: mux4t1_N
+generic map ( N => 32 )
 port map( i_S => alu_select_b,
               i_D0 => rt_EX,
               i_D1 => sign_ext_imm,
