@@ -260,6 +260,7 @@ end  MIPS_Processor;
         port(
               wb_mem_addr : in std_logic_vector(4 downto 0);
               wb_wb_addr  : in std_logic_vector(4 downto 0);
+              wb_ex_addr  : in std_logic_vector(4 downto 0);
               rs_addr     : in std_logic_vector(4 downto 0);
               rt_addr     : in std_logic_vector(4 downto 0);
       
@@ -373,6 +374,7 @@ raw_ins_D <= fetch_stage_reg(31 downto 0);
     port map(
       wb_mem_addr => wb_addr_MEM,
       wb_wb_addr  => s_RegWrAddr,
+      wb_ex_addr  => final_wb_addr_EX,
       rs_addr     => raw_ins_D(25 downto 21),
       rt_addr     => raw_ins_D(20 downto 16),
 
@@ -387,7 +389,7 @@ raw_ins_D <= fetch_stage_reg(31 downto 0);
                   i_D0 => reg_file_rs,
                   i_D1 => wb_data_MEM,
                   i_D2 => s_RegWrData,
-                  i_D3 => reg_file_rs,
+                  i_D3 => wb_data_EX,
                   o_O => rs_D);
 
     alu_b_select: mux4t1_N
@@ -396,7 +398,7 @@ raw_ins_D <= fetch_stage_reg(31 downto 0);
                   i_D0 => reg_file_rt,
                   i_D1 => wb_data_MEM,
                   i_D2 => s_RegWrData,
-                  i_D3 => reg_file_rt,
+                  i_D3 => wb_data_EX,
                   o_O => rt_D);
 
 -- Decode - Execute state registers
