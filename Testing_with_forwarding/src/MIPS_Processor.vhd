@@ -436,7 +436,7 @@ port map( i_S => alu_select_a,
               i_D0 => rs_EX,
               i_D1 => wb_data_MEM,
               i_D2 => s_RegWrData,
-              i_D3 => open,
+              i_D3 => rs_EX,
               o_O => alu_a);
 
 alu_b_select: mux4t1_N
