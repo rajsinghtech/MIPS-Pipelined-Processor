@@ -32,7 +32,7 @@ main:
     subu $s3, $s0, $s0  # s3 = 0 - 0 = 0
 
     # repl fun
-    REPL.QB $s4, 2      # s4 = 0x020202
+    repl.qb $s4, 2      # s4 = 0x020202
 
     # halting
     halt
