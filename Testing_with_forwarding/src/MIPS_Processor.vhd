@@ -242,7 +242,7 @@ end  MIPS_Processor;
       end component;
 
       component mux4t1_N
-        generic( N: integer );
+        generic( N: integer := 32 );
         port(i_S          : in std_logic_vector( 1 downto 0);
              i_D0         : in std_logic_vector( N-1 downto 0 );
              i_D1         : in std_logic_vector( N-1 downto 0 );
