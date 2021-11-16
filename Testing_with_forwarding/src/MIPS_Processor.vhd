@@ -258,7 +258,6 @@ end  MIPS_Processor;
       component forwarding_unit
         generic( N: integer := 32 );
         port(
-              ALUSource   : in std_logic;
               wb_mem_addr : in std_logic_vector(4 downto 0);
               wb_wb_addr  : in std_logic_vector(4 downto 0);
               rs_addr     : in std_logic_vector(4 downto 0);
