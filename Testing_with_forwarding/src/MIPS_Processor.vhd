@@ -260,8 +260,6 @@ end  MIPS_Processor;
               wb_wb_addr  : in std_logic_vector(4 downto 0);
               rs_addr     : in std_logic_vector(4 downto 0);
               rt_addr     : in std_logic_vector(4 downto 0);
-              wb_mem_data : in std_logic_vector(N-1 downto 0);
-              wb_wb_data : in std_logic_vector(N-1 downto 0);
       
               rs_select   : out std_logic_vector( 1 downto 0);
               rt_select   : out std_logic_vector( 1 downto 0)
@@ -446,7 +444,7 @@ port map( i_S => alu_select_b,
               i_D1 => sign_ext_imm,
               i_D2 => wb_data_MEM,
               i_D3 => s_RegWrData,
-              o_O => alu_b_select);
+              o_O => alu_b);
 
 
 AluLogic: ALU 
