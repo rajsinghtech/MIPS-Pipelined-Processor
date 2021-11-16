@@ -4,7 +4,6 @@ use IEEE.std_logic_1164.all;
 entity forwarding_unit is
   generic( N: integer := 32 );
   port(
-        ALUSource   : in std_logic;
         wb_mem_addr : in std_logic_vector(4 downto 0);
         wb_wb_addr  : in std_logic_vector(4 downto 0);
         rs_addr     : in std_logic_vector(4 downto 0);
@@ -24,9 +23,8 @@ begin
             else "10" when rs_addr = wb_wb_addr
             else "00";
 
-    rt_select <= "01" when ALUSource = '1'
-            else "10" when rt_addr = wb_mem_addr
-            else "11" when rt_addr = wb_wb_addr
+    rt_select <= "01" when rt_addr = wb_mem_addr
+            else "10" when rt_addr = wb_wb_addr
             else "00";
 
 end structural;

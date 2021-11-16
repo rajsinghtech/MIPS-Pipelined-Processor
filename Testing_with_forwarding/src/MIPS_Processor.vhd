@@ -63,6 +63,9 @@ end  MIPS_Processor;
     signal raw_ins_D               : std_logic_vector(N-1 downto 0);
     signal control_sigs_D          : std_logic_vector(30 downto 0);
 
+    signal reg_file_rs              : std_logic_vector(N-1 downto 0);
+    signal reg_file_rt              : std_logic_vector(N-1 downto 0);
+
 
     signal rs_D              : std_logic_vector(N-1 downto 0);
     signal rt_D              : std_logic_vector(N-1 downto 0);
@@ -364,9 +367,38 @@ raw_ins_D <= fetch_stage_reg(31 downto 0);
                 i_WA => s_RegWrAddr,
                 i_RA0 => raw_ins_D(25 downto 21),
                 i_RA1 => raw_ins_D(20 downto 16),
-                o_D0 => rs_D,
-                o_D1 => rt_D);
+                o_D0 => reg_file_rs,
+                o_D1 => reg_file_rt);
 
+    forwarding_logic: forwarding_unit
+    port map(
+      wb_mem_addr => wb_addr_MEM,
+      wb_wb_addr  => s_RegWrAddr,
+      rs_addr     => raw_ins_D(25 downto 21),
+      rt_addr     => raw_ins_D(20 downto 16),
+
+      rs_select   => alu_select_a,
+      rt_select   => alu_select_b);
+            
+
+
+    alu_a_select: mux4t1_N
+    generic map ( N => 32 ) 
+    port map( i_S => alu_select_a,
+                  i_D0 => reg_file_rs,
+                  i_D1 => wb_data_MEM,
+                  i_D2 => s_RegWrData,
+                  i_D3 => reg_file_rs,
+                  o_O => rs_D);
+
+    alu_b_select: mux4t1_N
+    generic map ( N => 32 )
+    port map( i_S => alu_select_b,
+                  i_D0 => reg_file_rt,
+                  i_D1 => wb_data_MEM,
+                  i_D2 => s_RegWrData,
+                  i_D3 => reg_file_rt,
+                  o_O => rt_D);
 
 -- Decode - Execute state registers
 
@@ -417,38 +449,16 @@ port MAP (i_A => raw_ins_EX( 15 downto 0),
           type_select => control_sigs_EX(28), -- sign extend signal
           o_Q => sign_ext_imm);
 
-forwarding_logic: forwarding_unit
-    port map(
-      ALUSource   => control_sigs_EX(9),
-      wb_mem_addr => wb_addr_MEM,
-      wb_wb_addr  => s_RegWrAddr,
-      rs_addr     => raw_ins_EX(25 downto 21),
-      rt_addr     => raw_ins_EX(20 downto 16),
 
-      rs_select   => alu_select_a,
-      rt_select   => alu_select_b);
-
-alu_a_select: mux4t1_N
+alu_imm_select: mux2t1_N
 generic map ( N => 32 ) 
-port map( i_S => alu_select_a,
-              i_D0 => rs_EX,
-              i_D1 => wb_data_MEM,
-              i_D2 => s_RegWrData,
-              i_D3 => rs_EX,
-              o_O => alu_a);
-
-alu_b_select: mux4t1_N
-generic map ( N => 32 )
-port map( i_S => alu_select_b,
+port map( i_S => control_sigs_EX(9),
               i_D0 => rt_EX,
               i_D1 => sign_ext_imm,
-              i_D2 => wb_data_MEM,
-              i_D3 => s_RegWrData,
               o_O => alu_b);
 
-
 AluLogic: ALU 
-port MAP (i_A => alu_a,
+port MAP (i_A => rs_EX,
           i_B => alu_b,
           i_Shamt => raw_ins_EX(10 downto 6),
           i_ALUOP => control_sigs_EX(8 downto 3),
