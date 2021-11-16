@@ -9,14 +9,9 @@ entity forwarding_unit is
         wb_wb_addr  : in std_logic_vector(4 downto 0);
         rs_addr     : in std_logic_vector(4 downto 0);
         rt_addr     : in std_logic_vector(4 downto 0);
-        wb_mem_data : in std_logic_vector(N-1 downto 0);
-        wb_wb_data : in std_logic_vector(N-1 downto 0);
 
         rs_select   : out std_logic_vector( 1 downto 0);
-        rt_select   : out std_logic_vector( 1 downto 0);
-
-        mem_data : out std_logic_vector(N-1 downto 0);
-        wb_data : out std_logic_vector(N-1 downto 0)
+        rt_select   : out std_logic_vector( 1 downto 0)
   );   -- Data value output
 
 end forwarding_unit;
@@ -24,9 +19,6 @@ end forwarding_unit;
 architecture structural of forwarding_unit is
 
 begin
-
-    mem_data <= wb_mem_data;
-    wb_data <= wb_wb_data;
 
     rs_select <= "01" when rs_addr = wb_mem_addr
             else "10" when rs_addr = wb_wb_addr

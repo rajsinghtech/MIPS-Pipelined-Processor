@@ -81,6 +81,11 @@ end  MIPS_Processor;
   signal rs_EX              : std_logic_vector(N-1 downto 0);
   signal rt_EX              : std_logic_vector(N-1 downto 0);
   signal sign_ext_imm       : std_logic_vector(N-1 downto 0);
+
+  signal alu_select_a       : std_logic_vector(1 downto 0);
+  signal alu_select_b       : std_logic_vector(1 downto 0);
+
+  signal alu_a              : std_logic_vector(N-1 downto 0);
   signal alu_b              : std_logic_vector(N-1 downto 0);
 
   signal branch_immediate   : std_logic_vector(N-1 downto 0);
@@ -234,7 +239,36 @@ end  MIPS_Processor;
              i_D          : in std_logic_vector( N - 1 downto 0);     -- Data value input
              o_Q          : out std_logic_vector( N - 1 downto 0));   -- Data value output
       
-      end component;      
+      end component;
+
+      component mux4t1_N
+        generic( N: integer );
+        port(i_S          : in std_logic_vector( 1 downto 0);
+             i_D0         : in std_logic_vector( N-1 downto 0 );
+             i_D1         : in std_logic_vector( N-1 downto 0 );
+             i_D2         : in std_logic_vector( N-1 downto 0 );
+             i_D3         : in std_logic_vector( N-1 downto 0 );
+             o_O          : out std_logic_vector( N-1 downto 0 ));
+      
+      end component;
+
+      component forwarding_unit
+        generic( N: integer := 32 );
+        port(
+              ALUSource   : in std_logic;
+              wb_mem_addr : in std_logic_vector(4 downto 0);
+              wb_wb_addr  : in std_logic_vector(4 downto 0);
+              rs_addr     : in std_logic_vector(4 downto 0);
+              rt_addr     : in std_logic_vector(4 downto 0);
+              wb_mem_data : in std_logic_vector(N-1 downto 0);
+              wb_wb_data : in std_logic_vector(N-1 downto 0);
+      
+              rs_select   : out std_logic_vector( 1 downto 0);
+              rt_select   : out std_logic_vector( 1 downto 0)
+        );   -- Data value output
+      
+      end component;
+      
 
 begin
 
@@ -385,16 +419,38 @@ port MAP (i_A => raw_ins_EX( 15 downto 0),
           type_select => control_sigs_EX(28), -- sign extend signal
           o_Q => sign_ext_imm);
 
+forwarding_logic: forwarding_unit
+    port map(
+      ALUSource   => control_sigs_EX(9),
+      wb_mem_addr => wb_addr_MEM,
+      wb_wb_addr  => s_RegWrAddr,
+      rs_addr     => raw_ins_EX(25 downto 21),
+      rt_addr     => raw_ins_EX(20 downto 16),
 
-alu_b_select: mux2t1_N
+      rs_select   => alu_select_a,
+      rt_select   => alu_select_b
+
+alu_a_select: mux2t4_N
 generic map ( N => 32 ) 
-port map( i_S => control_sigs_EX(9),
+port map( i_S => alu_select_a,
+              i_D0 => rs_EX,
+              i_D1 => wb_data_MEM,
+              i_D2 => s_RegWrData,
+              i_D3 => open,
+              o_O => alu_a);
+
+alu_b_select: mux2t4_N
+generic map ( N => 32 ) 
+port map( i_S => alu_select_b,
               i_D0 => rt_EX,
               i_D1 => sign_ext_imm,
-              o_O => alu_b);
+              i_D2 => wb_data_MEM,
+              i_D3 => s_RegWrData,
+              o_O => alu_b_select);
+
 
 AluLogic: ALU 
-port MAP (i_A => rs_EX,
+port MAP (i_A => alu_a,
           i_B => alu_b,
           i_Shamt => raw_ins_EX(10 downto 6),
           i_ALUOP => control_sigs_EX(8 downto 3),
