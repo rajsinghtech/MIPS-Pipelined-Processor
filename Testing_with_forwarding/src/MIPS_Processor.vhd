@@ -428,7 +428,7 @@ forwarding_logic: forwarding_unit
       rt_addr     => raw_ins_EX(20 downto 16),
 
       rs_select   => alu_select_a,
-      rt_select   => alu_select_b
+      rt_select   => alu_select_b);
 
 alu_a_select: mux4t1_N
 port map( i_S => alu_select_a,
