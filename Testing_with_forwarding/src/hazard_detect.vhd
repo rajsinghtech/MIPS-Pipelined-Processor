@@ -26,9 +26,6 @@ architecture structural of hazard_detect is
 
         signal raw_dep_EX   : std_logic;
         signal raw_dep_MEM  : std_logic;
-        
-        signal mem_read_EX  : std_logic;
-        signal mem_read_MEM : std_logic;
 
 begin
 
