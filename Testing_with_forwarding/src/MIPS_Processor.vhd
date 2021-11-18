@@ -317,7 +317,7 @@ port map(
   jump => control_sigs_EX(0),
   jumpIns => control_sigs_EX(10),
   branch => control_sigs_EX(1),
-  
+
   flush => flush,
   stall => stall
 );
@@ -457,7 +457,7 @@ raw_ins_D <= fetch_stage_reg(31 downto 0);
     generic map(N => 191)
     port map(
       i_CLK => iCLK,
-      i_RST => iRST or flush,
+      i_RST => iRST,
       i_WE => not stall,
       i_D(31 downto 0) => raw_ins_D,
       i_D(63 downto 32) => jal_return_D,
