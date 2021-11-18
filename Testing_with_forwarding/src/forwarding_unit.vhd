@@ -27,7 +27,7 @@ begin
 
     rt_select <= "10" when rt_addr = wb_wb_addr
             else "01" when rt_addr = wb_mem_addr
-            else "11" when rs_addr = wb_ex_addr
+            else "11" when rt_addr = wb_ex_addr
             else "00";
 
 end structural;
