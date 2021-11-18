@@ -22,13 +22,13 @@ entity hazard_detect is
 
 end hazard_detect;
 
-signal raw_dep_EX   : std_logic;
-signal raw_dep_MEM  : std_logic;
-
-signal mem_read_EX  : std_logic;
-signal mem_read_MEM : std_logic;
-
 architecture structural of hazard_detect is
+
+        signal raw_dep_EX   : std_logic;
+        signal raw_dep_MEM  : std_logic;
+        
+        signal mem_read_EX  : std_logic;
+        signal mem_read_MEM : std_logic;
 
 begin
 
@@ -46,5 +46,5 @@ begin
         else '0';
 
     stall <= (raw_dep_EX and mem_to_reg_EX) or (raw_dep_MEM and mem_to_reg_MEM);
-    
+
 end structural;
