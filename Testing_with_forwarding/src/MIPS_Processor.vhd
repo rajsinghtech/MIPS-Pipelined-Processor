@@ -48,6 +48,12 @@ end  MIPS_Processor;
     signal s_Ovfl         : std_logic;  -- TODO: this signal indicates an overflow exception would have been initiated
       
 
+    -- flush and stall signals
+
+    signal flush : std_logic;
+    signal stall : std_logic;
+
+
     -- Fetch signals
 
     signal next_ins_F              : std_logic_vector(N-1 downto 0);
@@ -269,9 +275,48 @@ end  MIPS_Processor;
         );   -- Data value output
       
       end component;
+
+      component hazard_detect
+        port(
+              rt_addr : in std_logic_vector(4 downto 0);
+              rs_addr  : in std_logic_vector(4 downto 0);
+      
+              wb_addr_MEM : in std_logic_vector(4 downto 0);
+              wb_addr_EX  : in std_logic_vector(4 downto 0);
+      
+              mem_to_reg_MEM : in std_logic;
+              mem_to_reg_EX  : in std_logic;
+      
+              jump            : in std_logic;
+              jumpIns         : in std_logic;
+              branch          : in std_logic;
+      
+              flush          : out std_logic;
+              stall          : out std_logic
+        );   -- Data value output
+      
+      end component;
       
 
 begin
+
+
+-- Detect Hazards
+
+hazard_control: hazard_detect
+port map(
+  rs_addr => raw_ins_D(25 downto 21),
+  rt_addr => raw_ins_D(20 downto 16),
+  wb_addr_MEM => wb_addr_MEM,
+  wb_addr_EX => final_wb_addr_EX,
+  mem_to_reg_MEM => mem_to_reg_MEM,
+  mem_to_reg_EX => control_sigs_EX(2),
+  jump => control_sigs_EX(0),
+  jumpIns => control_sigs_EX(10),
+  branch => control_sigs_EX(1),
+  flush => flush,
+  stall => stall
+);
 
 -- Fetch stage
 
@@ -281,7 +326,7 @@ begin
   port map(
     i_CLK => iCLK,
     i_RST => iRST,
-    i_WE => '1',
+    i_WE => not stall,
     reset_value => x"00400000",
     i_D => s_NextInstAddr,
     o_Q => s_IMemAddr
@@ -322,8 +367,8 @@ begin
   generic map(N => 96)
   port map(
     i_CLK => iCLK,
-    i_RST => iRST,
-    i_WE => '1',
+    i_RST => iRST or flush,
+    i_WE => not stall,
     i_D(31 downto 0) => raw_ins_F,
     i_D(63 downto 32) => jal_return_F,
     i_D(95 downto 64) => next_ins_F,
@@ -408,8 +453,8 @@ raw_ins_D <= fetch_stage_reg(31 downto 0);
     generic map(N => 191)
     port map(
       i_CLK => iCLK,
-      i_RST => iRST,
-      i_WE => '1',
+      i_RST => iRST or flush,
+      i_WE => not stall,
       i_D(31 downto 0) => raw_ins_D,
       i_D(63 downto 32) => jal_return_D,
       i_D(95 downto 64) => next_ins_D,

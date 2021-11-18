@@ -2,7 +2,6 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 
 entity hazard_detect is
-  generic( N: integer := 32 );
   port(
         rt_addr : in std_logic_vector(4 downto 0);
         rs_addr  : in std_logic_vector(4 downto 0);
