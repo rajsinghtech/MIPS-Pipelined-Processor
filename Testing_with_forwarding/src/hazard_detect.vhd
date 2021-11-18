@@ -31,10 +31,10 @@ begin
             else '1' when branch
             else '0';
 
-    stall <= '1' when mem_to_reg_EX && rs_addr = mem_to_reg_EX
-            else  '1' when mem_to_reg_EX && rt_addr = mem_to_reg_EX
-            else  '1' when mem_to_reg_MEM && rs_addr = wb_addr_MEM
-            else  '1' when mem_to_reg_MEM && rt_addr = wb_addr_MEM
+    stall <= '1' when mem_to_reg_EX and rs_addr = mem_to_reg_EX
+            else  '1' when mem_to_reg_EX and rt_addr = mem_to_reg_EX
+            else  '1' when mem_to_reg_MEM and rs_addr = wb_addr_MEM
+            else  '1' when mem_to_reg_MEM and rt_addr = wb_addr_MEM
             else '0';
 
 end structural;
