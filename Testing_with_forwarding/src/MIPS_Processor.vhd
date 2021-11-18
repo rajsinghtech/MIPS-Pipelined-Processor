@@ -307,13 +307,17 @@ hazard_control: hazard_detect
 port map(
   rs_addr => raw_ins_D(25 downto 21),
   rt_addr => raw_ins_D(20 downto 16),
+
   wb_addr_MEM => wb_addr_MEM,
   wb_addr_EX => final_wb_addr_EX,
+
   mem_to_reg_MEM => mem_to_reg_MEM,
   mem_to_reg_EX => control_sigs_EX(2),
+
   jump => control_sigs_EX(0),
   jumpIns => control_sigs_EX(10),
   branch => control_sigs_EX(1),
+  
   flush => flush,
   stall => stall
 );
