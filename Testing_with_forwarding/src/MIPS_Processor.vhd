@@ -117,9 +117,6 @@ end  MIPS_Processor;
 
   -- Memory Signals
 
-  signal next_ins_MEM             : std_logic_vector(N-1 downto 0);
-  signal alu_out_MEM             : std_logic_vector(N-1 downto 0);
-  signal mem_out_MEM             : std_logic_vector(N-1 downto 0);
   signal wb_data_MEM             : std_logic_vector(N-1 downto 0);
   signal wb_addr_MEM                  : std_logic_vector(4 downto 0);
 
@@ -592,7 +589,7 @@ port map( i_S => control_sigs_EX(27),
   port map(
     i_CLK => iCLK,
     i_RST => iRST,
-    i_WE => '1',
+    i_WE => not (control_sigs_EX(10) or control_sigs_EX(0) or take_branch),
     i_D(31 downto 0) => wb_data_EX,        -- alu out
     i_D(63 downto 32) => rt_EX,            -- jump address
     i_D(68 downto 64) => final_wb_addr_EX, -- mem write data
