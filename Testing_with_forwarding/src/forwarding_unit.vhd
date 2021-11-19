@@ -39,12 +39,12 @@ begin
             else "00";
 
         rs_select <= rs_sel when reg_write_mem
-                     rs_sel when reg_write_ex
-                     rs_sel when reg_write_wb
+                     else rs_sel when reg_write_ex
+                     else rs_sel when reg_write_wb
                      else "00";
 
         rt_select <= rt_sel when reg_write_mem
-                     rt_sel when reg_write_ex
-                     rt_sel when reg_write_wb
+                     else rt_sel when reg_write_ex
+                     else rt_sel when reg_write_wb
                      else "00";                     
 end structural;
