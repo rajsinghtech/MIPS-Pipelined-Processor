@@ -533,7 +533,7 @@ port map( i_S => control_sigs_EX(27),
   branch_immediate <= sign_ext_imm(29 downto 0) & "00";
 
   rippleadder: Ripple_Adder
-  port map(i_A    => next_ins_F,
+  port map(i_A    => next_ins_EX,
           i_B    => branch_immediate,
           o_S    => branch_addr,
           ovfl => open);
