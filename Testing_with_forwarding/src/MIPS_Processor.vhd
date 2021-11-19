@@ -464,7 +464,7 @@ raw_ins_D <= fetch_stage_reg(31 downto 0);
     generic map(N => 191)
     port map(
       i_CLK => iCLK,
-      i_RST => iRST,
+      i_RST => iRST or (control_sigs_EX(10) and not iCLK ),
       i_WE => not stall,
       i_D(31 downto 0) => raw_ins_D,
       i_D(63 downto 32) => jal_return_D,
@@ -598,7 +598,7 @@ port map( i_S => control_sigs_EX(27),
   generic map(N => 73)
   port map(
     i_CLK => iCLK,
-    i_RST => iRST or control_sigs_EX(10),
+    i_RST => iRST,
     i_WE => '1',
     i_D(31 downto 0) => wb_data_EX,        -- alu out
     i_D(63 downto 32) => rt_EX,            -- jump address
