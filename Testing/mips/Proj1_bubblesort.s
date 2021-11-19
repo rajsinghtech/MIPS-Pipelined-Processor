@@ -21,69 +21,97 @@ main:
     lui $s0, 0x1001
     # i($s2) = 0
     addi $s2, $zero, 0
+    nop
     ori $s1, $s1, 0x0028
+    nop
     nop
     nop
     lw $s1, 0($s1)
     nop
-    
     # outer loop
 outer_loop_cond:
     nop
+    nop
     addi $t0, $s1, -1
-    nop
-    nop
     # $t1 = i < n - 1
+    nop
+    nop
+    nop
     slt $t1, $s2, $t0
     nop
     nop
-    bne $t1, $zero, outer_loop_body
-    j exit_outer_loop
-outer_loop_body:
     nop
+    beq $t1, $zero, exit_outer_loop
+    nop
+    nop
+outer_loop_body:
     add $s4, $zero, $zero
     # j($s3) = 0
     add $s3, $zero, $zero
 inner_loop_cond:
     nop
+    nop
     sub  $t0, $s1, $s2
+    nop
+    nop
+    nop
     addi $t0, $t0, -1
+    nop
+    nop
+    nop
     # $t0 = j < n - i - 1
     slt $t0, $s3, $t0
-    bne $t0, $zero, inner_loop_body
-    j exit_inner_loop
-inner_loop_body:
     nop
+    nop
+    nop
+    beq $t0, $zero, exit_inner_loop
+    nop
+    nop
+inner_loop_body:
     # get offset of j (j * 4)
     sll $t0, $s3, 2
+    nop
+    nop
+    nop
     add $s5, $s0, $t0
-    
+    nop
+    nop
+    nop
     # offset for j+1 is just j + 4
     addi $s6, $s5, 4
-    
+    nop
+    nop
     lw $t0, 0($s5)
     lw $t1, 0($s6)
-    
+    nop
+    nop
+    nop
     slt $t2, $t1, $t0
+    nop
+    nop
+    nop
     beq $t2, $zero, inner_loop_footer
+    nop
+    nop
     #do swap
     sw $t0, 0($s6)
     sw $t1, 0($s5)
     addi $s4, $zero, 1
 inner_loop_footer:
     nop
+    nop
     addi $s3, $s3, 1
     j inner_loop_cond
 exit_inner_loop:
     nop
+    nop
     beq $s4, $zero, exit_outer_loop
+    nop
+    nop
 outer_loop_footer:
     addi $s2, $s2, 1
     j outer_loop_cond
 exit_outer_loop:
     nop
-    # Exit program
-    j exit
-exit:
     nop
     halt
