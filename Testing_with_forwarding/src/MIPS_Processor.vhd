@@ -264,6 +264,11 @@ end  MIPS_Processor;
               wb_mem_addr : in std_logic_vector(4 downto 0);
               wb_wb_addr  : in std_logic_vector(4 downto 0);
               wb_ex_addr  : in std_logic_vector(4 downto 0);
+
+              reg_write_mem : in std_logic;
+              reg_write_ex : in std_logic;
+              reg_write_wb : in std_logic;
+
               rs_addr     : in std_logic_vector(4 downto 0);
               rt_addr     : in std_logic_vector(4 downto 0);
       
@@ -421,6 +426,11 @@ raw_ins_D <= fetch_stage_reg(31 downto 0);
       wb_mem_addr => wb_addr_MEM,
       wb_wb_addr  => s_RegWrAddr,
       wb_ex_addr  => final_wb_addr_EX,
+
+      reg_write_ex => control_sigs_EX(27),
+      reg_write_mem => reg_write_MEM,
+      reg_write_wb => s_RegWr,
+
       rs_addr     => raw_ins_D(25 downto 21),
       rt_addr     => raw_ins_D(20 downto 16),
 
