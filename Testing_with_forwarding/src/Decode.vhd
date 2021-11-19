@@ -111,7 +111,7 @@ architecture structure of decode_logic is
           else DECODE_ALU_ENCODING(op_lui) when (op_and_func_code or "000000111111") = (DECODE_OP(luic) & "111111") 
           else DECODE_ALU_ENCODING(op_add) when (op_and_func_code or "000000111111") = (DECODE_OP(swc) & "111111") 
           else DECODE_ALU_ENCODING(op_add) when (op_and_func_code or "000000111111") = (DECODE_OP(lwc) & "111111") 
-          else "111111";
+          else DECODE_ALU_ENCODING(op_add);
 
    o_ALUSrc <= '1' when op_code = DECODE_OP(addic)
                    else '1' when op_code = DECODE_OP(addiuc)
