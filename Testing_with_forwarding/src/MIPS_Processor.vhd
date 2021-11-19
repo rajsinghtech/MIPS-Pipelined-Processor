@@ -598,8 +598,8 @@ port map( i_S => control_sigs_EX(27),
   generic map(N => 73)
   port map(
     i_CLK => iCLK,
-    i_RST => iRST,
-    i_WE => '1',
+    i_RST => iRST or control_sigs_EX(10),
+    i_WE => not (),
     i_D(31 downto 0) => wb_data_EX,        -- alu out
     i_D(63 downto 32) => rt_EX,            -- jump address
     i_D(68 downto 64) => final_wb_addr_EX, -- mem write data
