@@ -625,7 +625,7 @@ port map( i_S => control_sigs_EX(27),
   generic map(N => 73)
   port map(
     i_CLK => iCLK,
-    i_RST => iRST,
+    i_RST => iRST and not iCLK,
     i_WE => '1',
     i_D(31 downto 0) => wb_data_EX,        -- alu out
     i_D(63 downto 32) => rt_EX,            -- jump address
