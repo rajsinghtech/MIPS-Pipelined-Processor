@@ -386,7 +386,7 @@ port map(
             i_D => flush,
             o_Q => flush_stage_one);
 
-  refill_stage_one: dffg
+  refill_stage_two: dffg
   port map( i_CLK => iCLK,
             i_RST => iRST,
             i_WE => '1',
