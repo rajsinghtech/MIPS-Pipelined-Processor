@@ -53,6 +53,9 @@ end  MIPS_Processor;
     signal flush : std_logic;
     signal stall : std_logic;
 
+    signal flush_stage_one : std_logic;
+    signal flush_stage_two : std_logic;
+
 
     -- Fetch signals
 
@@ -116,8 +119,6 @@ end  MIPS_Processor;
 
 
   -- Memory Signals
-
-  signal clear_stage : std_logic;
 
   signal wb_data_MEM             : std_logic_vector(N-1 downto 0);
   signal wb_addr_MEM                  : std_logic_vector(4 downto 0);
@@ -335,6 +336,12 @@ port map(
 
 -- Fetch stage
 
+  pc_next_select: mux2t1_N
+  generic map ( N => 32 ) 
+  port map( i_S => flush_stage_one or flush_stage_two, -- jump signal
+              i_D0 => final_addr,
+              i_D1 => next_ins_F,
+              o_O => s_NextInstAddr);  
 
   PC: dffg_N_with_reset
   generic map(N => 32)
@@ -371,6 +378,20 @@ port map(
            we   => iInstLd,
            q    => s_Inst);
 
+
+  refill_stage_one: dffg
+  port map( i_CLK => iCLK,
+            i_RST => iRST,
+            i_WE => '1',
+            i_D => flush,
+            o_Q => flush_stage_one);
+
+  refill_stage_one: dffg
+  port map( i_CLK => iCLK,
+            i_RST => iRST,
+            i_WE => '1',
+            i_D => control_sigs_EX(10),
+            o_Q => flush_stage_two);
 
   -- IF/ID Stage registers
 
@@ -598,15 +619,13 @@ port map( i_S => control_sigs_EX(27),
                 i_D1 => rs_EX,
                 o_O => final_addr);
 
-  s_NextInstAddr <= final_addr;
-
 -- Execute state registers
 
   EX_MEM_Reg: dffg_N
   generic map(N => 73)
   port map(
     i_CLK => iCLK,
-    i_RST => iRST,
+    i_RST => iRST or clear_stage,
     i_WE => '1',
     i_D(31 downto 0) => wb_data_EX,        -- alu out
     i_D(63 downto 32) => rt_EX,            -- jump address
