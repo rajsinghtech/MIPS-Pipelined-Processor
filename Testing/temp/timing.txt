@@ -1,0 +1,107 @@
+
+#
+# CprE 381 toolflow Timing dump
+#
+
+FMax: 52.10mhz Clk Constraint: 20.00ns Slack: 0.81ns
+
+The path is given below
+
+ ===================================================================
+ From Node    : dffg_N:ID_EX_Reg|dffg:\G_NBit_REG:105:REG|s_Q
+ To Node      : dffg_N_with_reset:PC|dffg:\G_NBit_REG:20:REG|s_Q
+ Launch Clock : iCLK
+ Latch Clock  : iCLK
+ Data Arrival Path:
+ Total (ns)  Incr (ns)     Type  Element
+ ==========  ========= ==  ====  ===================================
+      0.000      0.000           launch edge time
+      3.055      3.055  R        clock network delay
+      3.287      0.232     uTco  dffg_N:ID_EX_Reg|dffg:\G_NBit_REG:105:REG|s_Q
+      3.287      0.000 FF  CELL  ID_EX_Reg|\G_NBit_REG:105:REG|s_Q|q
+      3.727      0.440 FF    IC  alu_b_select|\G_NBit_MUX:0:MUXI|or0|o_F~0|datab
+      4.152      0.425 FF  CELL  alu_b_select|\G_NBit_MUX:0:MUXI|or0|o_F~0|combout
+      4.468      0.316 FF    IC  AluLogic|adder0|mux0|\G_NBit_MUX:2:MUXI|and1|o_F|datab
+      4.836      0.368 FF  CELL  AluLogic|adder0|mux0|\G_NBit_MUX:2:MUXI|and1|o_F|combout
+      5.130      0.294 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:2:ADDR|or0|o_F~0|datab
+      5.555      0.425 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:2:ADDR|or0|o_F~0|combout
+      5.939      0.384 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:3:ADDR|or0|o_F~0|datac
+      6.220      0.281 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:3:ADDR|or0|o_F~0|combout
+      6.472      0.252 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:4:ADDR|or0|o_F~0|datad
+      6.597      0.125 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:4:ADDR|or0|o_F~0|combout
+      6.852      0.255 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:5:ADDR|or0|o_F~0|datac
+      7.133      0.281 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:5:ADDR|or0|o_F~0|combout
+      7.383      0.250 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:6:ADDR|or0|o_F~0|datad
+      7.508      0.125 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:6:ADDR|or0|o_F~0|combout
+      7.758      0.250 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:7:ADDR|or0|o_F~0|datad
+      7.883      0.125 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:7:ADDR|or0|o_F~0|combout
+      8.288      0.405 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:8:ADDR|or0|o_F~0|datad
+      8.413      0.125 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:8:ADDR|or0|o_F~0|combout
+      8.669      0.256 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:9:ADDR|or0|o_F~0|datac
+      8.950      0.281 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:9:ADDR|or0|o_F~0|combout
+      9.200      0.250 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:10:ADDR|or0|o_F~0|datad
+      9.325      0.125 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:10:ADDR|or0|o_F~0|combout
+      9.575      0.250 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:11:ADDR|or0|o_F~0|datad
+      9.700      0.125 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:11:ADDR|or0|o_F~0|combout
+      9.955      0.255 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:12:ADDR|or0|o_F~0|datac
+     10.236      0.281 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:12:ADDR|or0|o_F~0|combout
+     10.487      0.251 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:13:ADDR|or0|o_F~0|datad
+     10.612      0.125 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:13:ADDR|or0|o_F~0|combout
+     10.865      0.253 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:14:ADDR|or0|o_F~0|datad
+     10.990      0.125 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:14:ADDR|or0|o_F~0|combout
+     11.231      0.241 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:15:ADDR|or0|o_F~0|datad
+     11.356      0.125 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:15:ADDR|or0|o_F~0|combout
+     11.605      0.249 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:16:ADDR|or0|o_F~0|datad
+     11.730      0.125 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:16:ADDR|or0|o_F~0|combout
+     11.971      0.241 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:17:ADDR|or0|o_F~0|datad
+     12.096      0.125 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:17:ADDR|or0|o_F~0|combout
+     12.508      0.412 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:18:ADDR|or0|o_F~0|datac
+     12.789      0.281 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:18:ADDR|or0|o_F~0|combout
+     13.031      0.242 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:19:ADDR|or0|o_F~0|datac
+     13.312      0.281 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:19:ADDR|or0|o_F~0|combout
+     13.725      0.413 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:20:ADDR|or0|o_F~0|datad
+     13.850      0.125 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:20:ADDR|or0|o_F~0|combout
+     14.090      0.240 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:21:ADDR|or0|o_F~0|datad
+     14.215      0.125 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:21:ADDR|or0|o_F~0|combout
+     14.457      0.242 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:22:ADDR|or0|o_F~0|datad
+     14.582      0.125 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:22:ADDR|or0|o_F~0|combout
+     14.843      0.261 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:23:ADDR|or0|o_F~0|datad
+     14.968      0.125 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:23:ADDR|or0|o_F~0|combout
+     15.213      0.245 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:24:ADDR|or0|o_F~0|datac
+     15.494      0.281 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:24:ADDR|or0|o_F~0|combout
+     15.732      0.238 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:25:ADDR|or0|o_F~0|datad
+     15.857      0.125 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:25:ADDR|or0|o_F~0|combout
+     16.614      0.757 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:26:ADDR|or0|o_F~0|datac
+     16.895      0.281 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:26:ADDR|or0|o_F~0|combout
+     17.135      0.240 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:27:ADDR|or0|o_F~0|datad
+     17.260      0.125 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:27:ADDR|or0|o_F~0|combout
+     17.497      0.237 FF    IC  AluLogic|adder0|adder|\G_NBit_ADDER:28:ADDR|or0|o_F~0|datad
+     17.622      0.125 FF  CELL  AluLogic|adder0|adder|\G_NBit_ADDER:28:ADDR|or0|o_F~0|combout
+     17.891      0.269 FF    IC  AluLogic|nor1|\G_NBit_NOR:31:org2C|o_F~12|datac
+     18.172      0.281 FF  CELL  AluLogic|nor1|\G_NBit_NOR:31:org2C|o_F~12|combout
+     18.405      0.233 FF    IC  AluLogic|nor1|\G_NBit_NOR:31:org2C|o_F~13|datac
+     18.686      0.281 FF  CELL  AluLogic|nor1|\G_NBit_NOR:31:org2C|o_F~13|combout
+     18.919      0.233 FF    IC  AluLogic|nor1|\G_NBit_NOR:31:org2C|o_F~14|datac
+     19.200      0.281 FF  CELL  AluLogic|nor1|\G_NBit_NOR:31:org2C|o_F~14|combout
+     19.435      0.235 FF    IC  branch_type_mux|or0|o_F~0|datac
+     19.715      0.280 FF  CELL  branch_type_mux|or0|o_F~0|combout
+     19.993      0.278 FF    IC  PC|\G_NBit_REG:24:REG|s_Q~0|datac
+     20.253      0.260 FR  CELL  PC|\G_NBit_REG:24:REG|s_Q~0|combout
+     21.261      1.008 RR    IC  PC|reg_input[20]~119|datac
+     21.531      0.270 RF  CELL  PC|reg_input[20]~119|combout
+     21.763      0.232 FF    IC  PC|reg_input[20]~120|datac
+     22.044      0.281 FF  CELL  PC|reg_input[20]~120|combout
+     22.044      0.000 FF    IC  PC|\G_NBit_REG:20:REG|s_Q|d
+     22.148      0.104 FF  CELL  dffg_N_with_reset:PC|dffg:\G_NBit_REG:20:REG|s_Q
+ Data Required Path:
+ Total (ns)  Incr (ns)     Type  Element
+ ==========  ========= ==  ====  ===================================
+     20.000     20.000           latch edge time
+     22.925      2.925  R        clock network delay
+     22.957      0.032           clock pessimism removed
+     22.937     -0.020           clock uncertainty
+     22.955      0.018     uTsu  dffg_N_with_reset:PC|dffg:\G_NBit_REG:20:REG|s_Q
+ Data Arrival Time  :    22.148
+ Data Required Time :    22.955
+ Slack              :     0.807
+ ===================================================================
