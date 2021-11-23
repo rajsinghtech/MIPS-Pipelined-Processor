@@ -542,5 +542,6 @@ s_RegWr <= mem_stage_reg(38);
 s_RegWrAddr <= mem_stage_reg(36 downto 32);
 s_RegWrData <= mem_stage_reg(31 downto 0);
 s_Halt <= mem_stage_reg(37);
+oALUOut <= s_DMemAddr;
 
 end structure;
