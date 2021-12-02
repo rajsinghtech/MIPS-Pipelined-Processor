@@ -23,16 +23,49 @@ end forwarding_unit;
 
 architecture structural of forwarding_unit is
 
+        signal rs_sel : std_logic_vector( 1 downto 0 );
+        signal rt_sel : std_logic_vector( 1 downto 0 );
+
+        rs_wb_sig : std_logic_vector( 1 downto 0);
+        rt_wb_sig : std_logic_vector( 1 downto 0);
+
+        rs_mem_sig : std_logic_vector( 1 downto 0);
+        rt_mem_sig : std_logic_vector( 1 downto 0);
+
+        rs_ex_sig : std_logic_vector( 1 downto 0);
+        rt_ex_sig : std_logic_vector( 1 downto 0);
+
 begin
 
-  rs_select <= "10" when (rs_addr = wb_wb_addr) and reg_write_wb
-            else "01" when (rs_addr = wb_mem_addr) and reg_write_mem
-            else "11" when (rs_addr = wb_ex_addr) and reg_write_ex
+        rs_wb_sig <= "10" when  reg_write_wb
+                else "00";
+        
+        rt_wb_sig <= "10" when  reg_write_wb
+                else "00";
+
+        rs_mem_sig <= "01" when reg_write_mem
+                else "00";
+
+        rt_mem_sig <= "01" when reg_write_mem
+                else "00";
+        
+        rs_ex_sig <= "11" when reg_write_ex
+                else "00";
+
+        rt_ex_sig <= "11" when reg_write_ex
+                else "00";
+        
+                
+
+
+        rs_select <= rs_wb_sig when rs_addr = wb_wb_addr
+            else rs_mem_sig when rs_addr = wb_mem_addr
+            else rs_ex_sig when rs_addr = wb_ex_addr
             else "00";
 
-   rt_select <= "10" when (rt_addr = wb_wb_addr) and reg_write_wb
-            else "01" when (rt_addr = wb_mem_addr) and reg_write_mem
-            else "11" when (rt_addr = wb_ex_addr) and reg_write_ex
+        rt_select <= rt_wb_sig when rt_addr = wb_wb_addr
+            else rt_mem_sig when rt_addr = wb_mem_addr
+            else rt_ex_sig when rt_addr = wb_ex_addr
             else "00";
-
+                                 
 end structural;
