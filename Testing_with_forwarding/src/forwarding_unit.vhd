@@ -26,14 +26,14 @@ architecture structural of forwarding_unit is
         signal rs_sel : std_logic_vector( 1 downto 0 );
         signal rt_sel : std_logic_vector( 1 downto 0 );
 
-        rs_wb_sig : std_logic_vector( 1 downto 0);
-        rt_wb_sig : std_logic_vector( 1 downto 0);
+        signal rs_wb_sig : std_logic_vector( 1 downto 0);
+        signal rt_wb_sig : std_logic_vector( 1 downto 0);
 
-        rs_mem_sig : std_logic_vector( 1 downto 0);
-        rt_mem_sig : std_logic_vector( 1 downto 0);
-
-        rs_ex_sig : std_logic_vector( 1 downto 0);
-        rt_ex_sig : std_logic_vector( 1 downto 0);
+        signal rs_mem_sig : std_logic_vector( 1 downto 0);
+        signal rt_mem_sig : std_logic_vector( 1 downto 0);
+        
+        signal rs_ex_sig : std_logic_vector( 1 downto 0);
+        signal rt_ex_sig : std_logic_vector( 1 downto 0);
 
 begin
 
@@ -67,5 +67,5 @@ begin
             else rt_mem_sig when rt_addr = wb_mem_addr
             else rt_ex_sig when rt_addr = wb_ex_addr
             else "00";
-                                 
+
 end structural;
