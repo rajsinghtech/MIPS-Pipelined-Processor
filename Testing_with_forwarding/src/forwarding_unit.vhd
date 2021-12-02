@@ -23,28 +23,16 @@ end forwarding_unit;
 
 architecture structural of forwarding_unit is
 
-        signal rs_sel : std_logic_vector( 1 downto 0 );
-        signal rt_sel : std_logic_vector( 1 downto 0 );
-
 begin
 
-        rs_sel <= "10" when rs_addr = wb_wb_addr
-            else "01" when rs_addr = wb_mem_addr
-            else "11" when rs_addr = wb_ex_addr
+  rs_select <= "10" when (rs_addr = wb_wb_addr) & reg_write_wb
+            else "01" when (rs_addr = wb_mem_addr) & reg_write_mem
+            else "11" when (rs_addr = wb_ex_addr) & reg_write_ex
             else "00";
 
-        rt_sel <= "10" when rt_addr = wb_wb_addr
-            else "01" when rt_addr = wb_mem_addr
-            else "11" when rt_addr = wb_ex_addr
+   rt_select <= "10" when (rt_addr = wb_wb_addr) & reg_write_wb
+            else "01" when (rt_addr = wb_mem_addr) & reg_write_mem
+            else "11" when (rt_addr = wb_ex_addr) & reg_write_ex
             else "00";
 
-        rs_select <= rs_sel when reg_write_mem
-                     else rs_sel when reg_write_ex
-                     else rs_sel when reg_write_wb
-                     else "00";
-
-        rt_select <= rt_sel when reg_write_mem
-                     else rt_sel when reg_write_ex
-                     else rt_sel when reg_write_wb
-                     else "00";                     
 end structural;
