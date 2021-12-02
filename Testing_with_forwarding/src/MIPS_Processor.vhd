@@ -53,10 +53,6 @@ end  MIPS_Processor;
     signal flush : std_logic;
     signal stall : std_logic;
 
-    signal flush_stage_one : std_logic;
-    signal flush_stage_two : std_logic;
-
-
     -- Fetch signals
 
     signal next_ins_F              : std_logic_vector(N-1 downto 0);
@@ -334,14 +330,9 @@ port map(
   stall => stall
 );
 
--- Fetch stage
+-- Fetch stage  
 
-  pc_next_select: mux2t1_N
-  generic map ( N => 32 ) 
-  port map( i_S => flush_stage_one or flush_stage_two, -- jump signal
-              i_D0 => final_addr,
-              i_D1 => next_ins_F,
-              o_O => s_NextInstAddr);  
+  s_NextInstAddr <= next_ins_F;
 
   PC: dffg_N_with_reset
   generic map(N => 32)
@@ -378,20 +369,6 @@ port map(
            we   => iInstLd,
            q    => s_Inst);
 
-
-  refill_stage_one: dffg
-  port map( i_CLK => iCLK,
-            i_RST => iRST,
-            i_WE => '1',
-            i_D => flush,
-            o_Q => flush_stage_one);
-
-  refill_stage_two: dffg
-  port map( i_CLK => iCLK,
-            i_RST => iRST,
-            i_WE => '1',
-            i_D => control_sigs_EX(10),
-            o_Q => flush_stage_two);
 
   -- IF/ID Stage registers
 
@@ -494,7 +471,7 @@ raw_ins_D <= fetch_stage_reg(31 downto 0);
     generic map(N => 191)
     port map(
       i_CLK => iCLK,
-      i_RST => iRST or flush,
+      i_RST => iRST,
       i_WE => not stall,
       i_D(31 downto 0) => raw_ins_D,
       i_D(63 downto 32) => jal_return_D,
