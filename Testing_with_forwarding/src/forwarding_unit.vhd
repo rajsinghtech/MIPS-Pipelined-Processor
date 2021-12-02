@@ -25,14 +25,14 @@ architecture structural of forwarding_unit is
 
 begin
 
-  rs_select <= "10" when (rs_addr = wb_wb_addr) & reg_write_wb
-            else "01" when (rs_addr = wb_mem_addr) & reg_write_mem
-            else "11" when (rs_addr = wb_ex_addr) & reg_write_ex
+  rs_select <= "10" when (rs_addr = wb_wb_addr) and reg_write_wb
+            else "01" when (rs_addr = wb_mem_addr) and reg_write_mem
+            else "11" when (rs_addr = wb_ex_addr) and reg_write_ex
             else "00";
 
-   rt_select <= "10" when (rt_addr = wb_wb_addr) & reg_write_wb
-            else "01" when (rt_addr = wb_mem_addr) & reg_write_mem
-            else "11" when (rt_addr = wb_ex_addr) & reg_write_ex
+   rt_select <= "10" when (rt_addr = wb_wb_addr) and reg_write_wb
+            else "01" when (rt_addr = wb_mem_addr) and reg_write_mem
+            else "11" when (rt_addr = wb_ex_addr) and reg_write_ex
             else "00";
 
 end structural;
