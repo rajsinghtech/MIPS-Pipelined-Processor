@@ -353,7 +353,7 @@ port map(
 
   return_addr: Ripple_Adder
   port map(i_A    => s_IMemAddr,
-          i_B    => x"00000004",
+          i_B    => x"00000008",
           o_S    => jal_return_F,
           ovfl => open);   
           
