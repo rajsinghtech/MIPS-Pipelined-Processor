@@ -324,7 +324,7 @@ port map(
 
   jump => control_sigs_EX(0),
   jumpIns => control_sigs_EX(10),
-  branch => control_sigs_EX(1),
+  branch => take_branch,
 
   flush => flush,
   stall => stall
