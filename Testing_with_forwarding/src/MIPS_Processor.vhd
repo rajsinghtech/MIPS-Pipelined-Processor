@@ -434,7 +434,7 @@ raw_ins_D <= fetch_stage_reg(31 downto 0);
       wb_wb_addr  => s_RegWrAddr,
       wb_ex_addr  => final_wb_addr_EX,
 
-      reg_write_ex => control_sigs_EX(27),
+      reg_write_ex => control_sigs_EX(11),
       reg_write_mem => reg_write_MEM,
       reg_write_wb => s_RegWr,
 
@@ -550,7 +550,7 @@ port map( i_S => control_sigs_EX(27),
   branch_immediate <= sign_ext_imm(29 downto 0) & "00";
 
   rippleadder: Ripple_Adder
-  port map(i_A    => next_ins_EX,
+  port map(i_A   => next_ins_EX,
           i_B    => branch_immediate,
           o_S    => branch_addr,
           ovfl => open);
