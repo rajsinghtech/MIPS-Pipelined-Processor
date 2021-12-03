@@ -332,7 +332,7 @@ port map(
 
 -- Fetch stage  
 
-  s_NextInstAddr <= next_ins_F;
+  s_NextInstAddr <= final_addr;
 
   PC: dffg_N_with_reset
   generic map(N => 32)
