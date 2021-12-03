@@ -9,7 +9,6 @@ skip:
 skip2:
 	jal fun
 	ori $s3 $zero 0x1234
-	halt
 	
 	beq $s0, $zero exit
 	ori $s4 $zero 0x1234
