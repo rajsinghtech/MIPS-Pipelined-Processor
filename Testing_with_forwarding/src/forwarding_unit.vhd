@@ -58,14 +58,14 @@ begin
                 
 
 
-        rs_select <= rs_wb_sig when rs_addr = wb_wb_addr
+        rs_select <= rs_ex_sig when rs_addr = wb_ex_addr 
             else rs_mem_sig when rs_addr = wb_mem_addr
-            else rs_ex_sig when rs_addr = wb_ex_addr
+            else rs_wb_sig when rs_addr = wb_wb_addr
             else "00";
 
-        rt_select <= rt_wb_sig when rt_addr = wb_wb_addr
+        rt_select <= rt_ex_sig when rt_addr = wb_ex_addr 
             else rt_mem_sig when rt_addr = wb_mem_addr
-            else rt_ex_sig when rt_addr = wb_ex_addr
+            else rt_wb_sig when rt_addr = wb_wb_addr
             else "00";
 
 end structural;
