@@ -108,10 +108,11 @@ end  MIPS_Processor;
   signal wb_addr_EX       : std_logic_vector(4 downto 0);
   signal final_wb_addr_EX : std_logic_vector(4 downto 0);
 
-  signal ALU_zero           : std_logic;
-  signal ALU_not_zero       : std_logic;
-  signal branch_pass        : std_logic;
-  signal take_branch        : std_logic;
+  signal ALU_zero            : std_logic;
+  signal ALU_not_zero        : std_logic;
+  signal branch_pass         : std_logic;
+  signal take_branch         : std_logic;
+  signal branch_delay        : std_logic;
 
   signal execute_stage_reg         : std_logic_vector( 72 downto 0);
 
@@ -584,9 +585,11 @@ port map( i_S => control_sigs_EX(27),
                 o_O => branch_pass);
 
 
-  ANDG0: andg2 port MAP (i_A => control_sigs_EX(1), -- branch signal
-          i_B => branch_pass, 
-          o_F => take_branch);
+  --ANDG0: andg2 port MAP (i_A => control_sigs_EX(1), -- branch signal
+  --        i_B => branch_pass, 
+  --        o_F => take_branch);
+
+  take_branch <= control_sigs_EX(1) and branch_pass;
 
 
 -- address select muxes
