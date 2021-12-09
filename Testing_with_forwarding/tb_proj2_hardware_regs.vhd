@@ -44,16 +44,19 @@ ARCHITECTURE tb_arch_proj2_hardware_regs OF tb_proj2_hardware_regs IS
     signal s_instructionAddr        : std_logic_vector := x"00400000"
 
 
-   signal flush : std_logic;
-    signal stall : std_logic;
+    signal flush : std_logic;
+    signal stall : std_logic := '0';
 -----------------------------------------------------------------------------------
     signal fetch_stage_reg          : std_logic_vector( 95 downto 0);
     signal decode_stage_reg         : std_logic_vector( 190 downto 0);
     signal execute_stage_reg        : std_logic_vector( 72 downto 0);
     signal mem_stage_reg            : std_logic_vector( 38 downto 0);
 -----------------------------------------------------------------------------------
+   signal next_ins_F              : std_logic_vector(31 downto 0);
+   signal jal_return_F            : std_logic_vector(31 downto 0);
+   signal raw_ins_F               : std_logic_vector(31 downto 0);
 
-
+   signal s_Inst                  : std_logic_vector(31 downto 0) := x"02109820";
 
     --begin
 
@@ -62,8 +65,8 @@ BEGIN
     IF_ID_Reg : dffg_N
     GENERIC MAP(N => 96)
     PORT MAP(
-        i_CLK => iCLK,
-        i_RST => iRST OR flush,
+        i_CLK => sCLK,
+        i_RST => reset OR flush,
         i_WE => NOT stall,
         i_D(31 DOWNTO 0) => raw_ins_F,
         i_D(63 DOWNTO 32) => jal_return_F,
@@ -73,8 +76,8 @@ BEGIN
     ID_EX_Reg : dffg_N
     GENERIC MAP(N => 191)
     PORT MAP(
-        i_CLK => iCLK,
-        i_RST => iRST,
+        i_CLK => sCLK,
+        i_RST => reset,
         i_WE => NOT stall,
         i_D(31 DOWNTO 0) => raw_ins_D,
         i_D(63 DOWNTO 32) => jal_return_D,
@@ -87,8 +90,8 @@ BEGIN
     EX_MEM_Reg : dffg_N
     GENERIC MAP(N => 73)
     PORT MAP(
-        i_CLK => iCLK,
-        i_RST => iRST AND NOT iCLK,
+        i_CLK => sCLK,
+        i_RST => reset AND NOT sCLK,
         i_WE => '1',
         i_D(31 DOWNTO 0) => wb_data_EX, -- alu out
         i_D(63 DOWNTO 32) => rt_EX, -- jump address
@@ -102,8 +105,8 @@ BEGIN
     MEM_WB_Reg : dffg_N
     GENERIC MAP(N => 39)
     PORT MAP(
-        i_CLK => iCLK,
-        i_RST => iRST,
+        i_CLK => sCLK,
+        i_RST => reset,
         i_WE => '1',
         i_D(31 DOWNTO 0) => wb_data_MEM, -- write back data
         i_D(36 DOWNTO 32) => wb_addr_MEM, -- write back address
@@ -111,6 +114,12 @@ BEGIN
         i_D(38) => reg_write_MEM, -- reg_write
         o_Q => mem_stage_reg
     );
+
+    raw_ins_F <= s_Inst;
+----------------------------------------------------------
+    next_ins_D <= fetch_stage_reg(95 downto 64);
+    jal_return_D <= fetch_stage_reg(63 downto 32);
+    raw_ins_D <= fetch_stage_reg(31 downto 0);
 
     P_CLK : PROCESS
     BEGIN
