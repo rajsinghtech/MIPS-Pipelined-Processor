@@ -396,7 +396,7 @@ port map(
     i_WE => not stall,
     i_D(31 downto 0) => raw_ins_F,
     i_D(63 downto 32) => jal_return_F,
-    i_D(95 downto 64) => s_IMemAddr,
+    i_D(95 downto 64) => next_ins_F,
     o_Q => fetch_stage_reg
   );
 
