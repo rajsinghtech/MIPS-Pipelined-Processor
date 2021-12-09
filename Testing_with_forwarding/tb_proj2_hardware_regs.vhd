@@ -13,6 +13,7 @@ ENTITY tb_proj2_hardware_regs IS
 END ENTITY;
 
 ARCHITECTURE tb_arch_proj2_hardware_regs OF tb_proj2_hardware_regs IS
+
     --components
     COMPONENT dffg_N
         GENERIC (N : INTEGER);
@@ -36,39 +37,27 @@ ARCHITECTURE tb_arch_proj2_hardware_regs OF tb_proj2_hardware_regs IS
 
     END COMPONENT;
 
-    component MIPS_Processor is
-        generic(
-                N : integer := 32; 
-                WORD_SIZE : integer := 32; 
-                OP_CODE_SIZE : integer := 6; 
-                MAX_SHIFT : integer := 5; 
-                SOURCE_LEN: integer := 16;
-                TARGET_LEN: integer := 32;
-                IMMEDIATE_LEN: integer := 16);
-      
-        port(iCLK            : in std_logic;
-             iRST            : in std_logic;
-             iInstLd         : in std_logic;
-             iInstAddr       : in std_logic_vector(N-1 downto 0);
-             iInstExt        : in std_logic_vector(N-1 downto 0);
-             oALUOut         : out std_logic_vector(N-1 downto 0)); -- TODO: Hook this up to the output of the ALU. It is important for synthesis that you have this output that can effectively be impacted by all other components so they are not optimized away.
-      
-      end component;
     --signals
     signal sCLK, reset, si_WE       : std_logic := '0';
     signal s_instructionLoad        : std_logic := '1';
-    signal s_o_ALUOut                : std_logic_vector(31 downto 0);
+    signal s_o_ALUOut               : std_logic_vector(31 downto 0);
     signal s_instructionAddr        : std_logic_vector := x"00400000"
+
+
+   signal flush : std_logic;
+    signal stall : std_logic;
+-----------------------------------------------------------------------------------
+    signal fetch_stage_reg          : std_logic_vector( 95 downto 0);
+    signal decode_stage_reg         : std_logic_vector( 190 downto 0);
+    signal execute_stage_reg        : std_logic_vector( 72 downto 0);
+    signal mem_stage_reg            : std_logic_vector( 38 downto 0);
+-----------------------------------------------------------------------------------
+
+
+
     --begin
 
 BEGIN
-
-    DUT_PIPELINE : MIPS_Processor port map(iCLK      => sCLK,
-                                           iRST      => reset,
-                                           iInstLd   => s_InstructionLoad,
-                                           iInstAddr => s_instructionAddr,
-                                           iInstExt  => ,
-                                           oALUOut   => );
 
     IF_ID_Reg : dffg_N
     GENERIC MAP(N => 96)
