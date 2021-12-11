@@ -37,22 +37,22 @@ architecture structural of forwarding_unit is
 
 begin
 
-        rs_wb_sig <= "10" when  reg_write_wb
+        rs_wb_sig <= "10" when  reg_write_wb = '1'
                 else "00";
         
-        rt_wb_sig <= "10" when  reg_write_wb
+        rt_wb_sig <= "10" when  reg_write_wb = '1'
                 else "00";
 
-        rs_mem_sig <= "01" when reg_write_mem
+        rs_mem_sig <= "01" when reg_write_mem = '1'
                 else "00";
 
-        rt_mem_sig <= "01" when reg_write_mem
+        rt_mem_sig <= "01" when reg_write_mem = '1'
                 else "00";
         
-        rs_ex_sig <= "11" when reg_write_ex
+        rs_ex_sig <= "11" when reg_write_ex = '1'
                 else "00";
 
-        rt_ex_sig <= "11" when reg_write_ex
+        rt_ex_sig <= "11" when reg_write_ex = '1'
                 else "00";
         
                 

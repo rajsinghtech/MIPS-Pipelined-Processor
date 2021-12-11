@@ -34,7 +34,7 @@ begin
 	       		o_Q => reg_out(i));
   end generate G_NBit_REG;
   
-  o_Q <= (others => '0') when i_OE
+  o_Q <= (others => '0') when i_OE = '1'
         else reg_out;
   
 

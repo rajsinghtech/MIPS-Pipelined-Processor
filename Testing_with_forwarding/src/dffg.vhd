@@ -50,10 +50,12 @@ begin
   -- glitchy behavior on startup.
   process (i_CLK, i_RST)
   begin
-    if (i_RST = '1') then
-      s_Q <= '0'; -- Use "(others => '0')" for N-bit values
-    elsif (rising_edge(i_CLK)) then
-      s_Q <= s_D;
+    if (rising_edge(i_CLK)) then
+      if (i_RST = '1') then
+        s_Q <= '0'; -- Use "(others => '0')" for N-bit values
+      else
+        s_Q <= s_D;
+      end if;
     end if;
 
   end process;

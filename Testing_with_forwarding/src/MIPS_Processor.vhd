@@ -304,6 +304,8 @@ end  MIPS_Processor;
               jump            : in std_logic;
               jumpIns         : in std_logic;
               branch          : in std_logic;
+              
+              i_clk           : in std_logic;
       
               flush          : out std_logic;
               stall          : out std_logic
@@ -338,6 +340,8 @@ port map(
   jump => control_sigs_EX(0),
   jumpIns => control_sigs_EX(10),
   branch => take_branch,
+  
+  i_clk => iCLK,
 
   flush => flush,
   stall => stall
@@ -392,7 +396,7 @@ port map(
   IF_ID_Reg: dffg_N
   generic map(N => 96)
   port map(
-    i_CLK => iCLK,
+    i_CLK => not iCLK,
     i_RST => iRST or flush,
     i_WE => not stall,
     i_D(31 downto 0) => raw_ins_F,
@@ -487,7 +491,7 @@ raw_ins_D <= fetch_stage_reg(31 downto 0);
     decode_values(190 downto 159) <= rt_D;
     
     
-    decode_stage_input <= (others => '0') when stall
+    decode_stage_input <= (others => '0') when stall = '1'
             else decode_values;
     
      
@@ -551,6 +555,7 @@ port MAP (i_A => rs_EX,
           ovfl => s_Ovfl,
           o_S => alu_out_EX);
 
+oALUOut <= alu_out_EX;
 
 INVG0: invg port MAP (i_A => ALU_zero, 
                       o_F => ALU_not_zero);
@@ -589,7 +594,9 @@ port map( i_S => control_sigs_EX(27),
   --        i_B => branch_pass, 
   --        o_F => take_branch);
 
-  take_branch <= control_sigs_EX(1) and branch_pass;
+ take_branch <=  control_sigs_EX(1) and branch_pass;
+  
+
 
 
 -- address select muxes
